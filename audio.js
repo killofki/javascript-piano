@@ -191,14 +191,12 @@
 			// if you make dataURIs that are too large, but it lets you make 
 			// really large blobs... 
 			var view = new Uint8Array( data .length ); 
-			for ( var i = 0; i < view .length; i++ ) { 
-				view[ i ] = data .charCodeAt( i ); 
-				} 
+			view .forEach( ( v, i ) => view[ i ] = data .charCodeAt( i ) ); 
 			var blob = new Blob( [ view ], { type : 'audio/wav' } ); 
 			return window .webkitURL .createObjectURL( blob ); 
 			} 
 		else { 
-			return 'data:audio/wav;base64,' + btoa( data ); 
+			return `data:audio/wav;base64,${ btoa( data ) }`; 
 			} 
 		} 
 	
@@ -224,10 +222,10 @@
 						l .push( data[ attr ] ); 
 						} 
 					l .sort(); 
-					key += '-' + l .join('-'); 
+					key += `-${ l .join('-') }`; 
 					} 
 				else if ( typeof data != 'undefined' ) { 
-					key = n + '.' + key; 
+					key = `${ n }.${ key }`; 
 					} 
 				
 				var sound = this .sounds[ key ]; 
