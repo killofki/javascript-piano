@@ -125,13 +125,13 @@
 	
 		cfg = $ .extend( 
 			  { 
-				  channels : 1
+				  channels : 1 
 				, sampleRate : 11025 // Hz 
 				, bitDepth : 16 // bits/sample 
 				, seconds : .5 
-				, volume : 20000 //32767, 
+				, volume : 20000 //32767 
 				, freq : 440 
-				}
+				} 
 			, cfg
 			); 
 		
@@ -201,7 +201,7 @@
 		return getFormDataURI( 'audio/wav', data ); 
 		} // -- toDataURI() 
 	
-	function getFormDataURI( form, data ) { 
+	function getFormDataURI( form, data ) { // lazy.. 
 		getFormDataURI = ( form, data ) => // default function : toURI 
 			`data:${ form };base64,${ btoa( data ) }` 
 			; 
@@ -212,7 +212,7 @@
 				getFormDataURI = toBlob; 
 				} catch( e ) {} 
 			} 
-		getFormDataURI( form, data ); // execute.. 
+		getFormDataURI( form, data ); // execute about calling.. 
 		
 		// functions in getFormDataURI.. 
 		function toBlob( form, data ) { 
