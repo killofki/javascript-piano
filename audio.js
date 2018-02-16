@@ -154,7 +154,7 @@
 							, [ cfg .channels * cfg .bitDepth / 8, 2 ], 
 							, [ cfg .bitDepth, 2 ] 
 							] 
-						.map( ( ... ar ) => asBytes( ... ar ) ) 
+						.map( ( [ value, bytes ] ) => asBytes( value, bytes ) ) 
 					] 
 				.join( '' ) 
 			; 
