@@ -5,20 +5,11 @@
  */ 
 ( q => { 
 	
-	// test if we can use blobs 
-	var canBlob = false; 
-	if ( window .webkitURL && window .Blob ) { 
-		try { 
-			new Blob(); 
-			canBlob = true; 
-			} catch(e) {} 
-		} 
-	
 	var DataGenerator = $ .extend(
 		  ( styleFn, volumeFn, cfg ) => { 
 			cfg = $ .extend( 
 					  { 
-						freq : 440
+						  freq : 440
 						, volume : 32767 
 						, sampleRate : 11025 // Hz 
 						, seconds : .5 
@@ -91,8 +82,7 @@
 	var 
 		Notes = { 
 			  sounds : {} 
-			, getDataURI : function( n, cfg ) { 
-				cfg = cfg || {}; 
+			, getDataURI : function( n, cfg = {} ) { 
 				cfg .freq = noteToFreq( n ); 
 				return toDataURI( cfg ); 
 				} 
@@ -208,19 +198,30 @@
 				.join( '' ) 
 			; 
 		
-		if ( canBlob ) { 
-			// so chrome was blowing up, because it just blows up sometimes 
-			// if you make dataURIs that are too large, but it lets you make 
-			// really large blobs... 
+		return getFormDataURI( 'audio/wav', data ); 
+		} // -- toDataURI() 
+	
+	function getFormDataURI( form, data ) { 
+		getFormDataURI = ( form, data ) => // default function : toURI 
+			`data:${ form };base64,${ btoa( data ) }` 
+			; 
+		// test if we can use blobs 
+		if ( window .webkitURL && window .Blob ) { 
+			try { 
+				new Blob(); 
+				getFormDataURI = toBlob; 
+				} catch( e ) {} 
+			} 
+		getFormDataURI( form, data ); // execute.. 
+		
+		// functions in getFormDataURI.. 
+		function toBlob( form, data ) { 
 			var view = new Uint8Array( data .length ); 
 			view .forEach( ( v, i ) => view[ i ] = data .charCodeAt( i ) ); 
-			var blob = new Blob( [ view ], { type : 'audio/wav' } ); 
+			var blob = new Blob( [ view ], { type : form } ); 
 			return window .webkitURL .createObjectURL( blob ); 
 			} 
-		else { 
-			return `data:audio/wav;base64,${ btoa( data ) }`; 
-			} 
-		} // -- toDataURI() 
+		} 
 	
 	function attack( i ) { 
 		return i < 200 ? (i/200) : 1; 
