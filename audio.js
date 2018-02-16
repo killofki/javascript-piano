@@ -73,7 +73,7 @@
 					// y = -(1/m^2)*x^2 + 1; 
 				} 
 			} // -- { style, squareWave, triangleWave, sawtoothWave, volume } 
-		); 
+		); // -- dataGenerator = $ .extend() 
 	DataGenerator .style .default = DataGenerator .style .wave; 
 	DataGenerator .volume .default = DataGenerator .volume .linearFade; 
 	
