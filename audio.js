@@ -6,7 +6,11 @@
 ( q => { 
 	
 	var DataGenerator = $ .extend( 
-		  ( styleFn = DataGenerator .style .default, volumeFn = DataGenerator .volume .default, cfg = {} ) => { 
+		  ( 
+				  styleFn = DataGenerator .style .default
+				, volumeFn = DataGenerator .volume .default
+				, cfg = {} 
+				) => { 
 			( cfg = { 
 					  freq : 440
 					, volume : 32767 
