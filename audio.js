@@ -79,16 +79,16 @@
 			} // -- { style, squareWave, triangleWave, sawtoothWave, volume } 
 		); // -- DataGenerator = $ .extend() 
 	[ [ 'style', 'wave' ], [ 'volume', 'linearFade' ] ] 
-	.forEach( ( [ p, q ], i, a, ele = DataGenerator[ p ] ) => ele .default = ele[ q ] )
+	.forEach( ( [ p, q ], i, a, ele = DataGenerator[ p ] ) => ele .default = ele[ q ] ) 
 		; 
 	
 	var 
 		Notes = { 
 			  sounds : {} 
-			, getDataURI : function( n, cfg = {} ) { 
-				cfg .freq = noteToFreq( n ); 
-				return toDataURI( cfg ); 
-				} 
+			, getDataURI : ( n, cfg = {} ) => (
+				  ( cfg .freq = noteToFreq( n ) ) 
+				, toDataURI( cfg ) 
+				) 
 			, getCachedSound : function( n, data ) { 
 				var key = n, cfg; 
 				if ( data && typeof data == "object" ) { 
@@ -105,11 +105,10 @@
 					key = `${ n }.${ key }`; 
 					} 
 				
-				var sound = this .sounds[ key ]; 
-				if ( ! sound ) { 
-					sound = this .sounds[ key ] = new Audio( this .getDataURI( n, cfg ) ); 
-					} 
-				return sound; 
+				return (
+					   ( this .sounds[ key ] ) 
+					|| ( this .sounds[ key ] = new Audio( this .getDataURI( n, cfg ) ) ) 
+					); 
 				} 
 			, noteToFreq 
 			} 
