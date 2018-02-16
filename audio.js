@@ -74,10 +74,7 @@
 				} 
 			} // -- { style, squareWave, triangleWave, sawtoothWave, volume } 
 		); // -- DataGenerator = $ .extend() 
-	[ 
-		  [ 'style', 'wave' ]
-		, [ 'volume', 'linearFade' ] 
-		] 
+	[ [ 'style', 'wave' ], [ 'volume', 'linearFade' ] ] 
 	.forEach( ( [ p, q ], i, a, ele = DataGenerator[ p ] ) => 
 		ele .default = ele[ q ] 
 		); 
