@@ -6,24 +6,22 @@
 ( q => { 
 	
 	var DataGenerator = $ .extend( 
-		  ( styleFn, volumeFn, cfg ) => { 
-			cfg = $ .extend( 
-					  { 
-						  freq : 440
-						, volume : 32767 
-						, sampleRate : 11025 // Hz 
-						, seconds : .5 
-						, channels : 1 
-						}
-					, cfg 
-					) 
+		  ( styleFn, volumeFn, cfg = {} ) => { 
+			( cfg = { 
+					  freq : 440
+					, volume : 32767 
+					, sampleRate : 11025 // Hz 
+					, seconds : .5 
+					, channels : 1 
+					, ... cfg 
+					} )
 				; 
 			
 			var data = []; 
 			var maxI = cfg .sampleRate * cfg .seconds; 
 			for ( var i = 0; i < maxI; i++ ) { 
 				for ( var j = 0; j < cfg .channels; j++) { 
-					[ cfg ] .forEach( ( { freq, volume, sampleRate, seconds }, k, cfga
+					[ cfg ] .forEach( ( { freq, volume, sampleRate, seconds }, k, cfga 
 							, fars = [ freq, volume, i, sampleRate, seconds, maxI ] 
 							) => 
 						data .push( asBytes( volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 ) ) 
@@ -31,7 +29,7 @@
 					} 
 				} 
 			return data; 
-			} // -- ( styleFn, volumeFn, cfg ) => {} 
+			} // -- ( styleFn, volumeFn, cfg ) => {} // default value over $ 
 		, { 
 			  style : { 
 				  wave : ( freq, volume, i, sampleRate, seconds ) => 
