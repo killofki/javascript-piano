@@ -3,18 +3,18 @@
 /*! Copyright (c) 2013 - Peter Coles (mrcoles.com) 
  *  Licensed under the MIT license: http://mrcoles.com/media/mit-license.txt 
  */ 
-(function() { 
+( q => { 
 	
 	// test if we can use blobs 
 	var canBlob = false; 
-	if (window .webkitURL && window .Blob) { 
+	if ( window .webkitURL && window .Blob ) { 
 		try { 
 			new Blob(); 
 			canBlob = true; 
 			} catch(e) {} 
 	} 
 	
-	function asBytes(value, bytes) { 
+	function asBytes( value, bytes ) { 
 		// Convert value into little endian hex bytes 
 		// value - the number as a decimal integer (representing bytes) 
 		// bytes - the number of bytes that this value takes up in a string 
@@ -23,19 +23,19 @@
 		// asBytes(2835, 4) 
 		// > '\x13\x0b\x00\x00' 
 		var result = []; 
-		for (; bytes>0; bytes--) { 
-			result .push(String .fromCharCode(value & 255)); 
+		for ( ; bytes > 0; bytes-- ) { 
+			result .push( String .fromCharCode( value & 255 ) ); 
 			value >>= 8; 
 			} 
 		return result .join(''); 
 		} 
 	
-	function attack(i) { 
+	function attack( i ) { 
 		return i < 200 ? (i/200) : 1; 
 		} 
 	
 	var DataGenerator = $ .extend(
-		  function(styleFn, volumeFn, cfg) { 
+		  ( styleFn, volumeFn, cfg ) => { 
 			cfg = $ .extend( 
 					  { 
 						freq : 440
@@ -52,20 +52,14 @@
 			var maxI = cfg .sampleRate * cfg .seconds; 
 			for ( var i = 0; i < maxI; i++ ) { 
 				for ( var j = 0; j < cfg .channels; j++) { 
-					data .push( 
-						asBytes( 
-							  volumeFn( 
-								  styleFn( cfg .freq, cfg .volume, i, cfg .sampleRate, cfg .seconds, maxI )
-								, cfg .freq, cfg .volume, i, cfg .sampleRate, cfg .seconds, maxI 
-								) 
-							* attack(i)
-							, 2 
-							) 
+					[ cfg ] .forEach( ( { freq, volume, sampleRate, seconds }, k, cfga
+							, fars = [ freq, volume, i, sampleRate, seconds, maxI ] ) => 
+						data .push( asBytes( volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 ) ) 
 						); 
 					} 
 				} 
 			return data; 
-			}
+			} // -- ( styleFn, volumeFn, cfg ) => {} 
 		, { 
 			  style : { 
 				  wave : function( freq, volume, i, sampleRate, seconds ) { 
