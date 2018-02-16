@@ -53,7 +53,8 @@
 			for ( var i = 0; i < maxI; i++ ) { 
 				for ( var j = 0; j < cfg .channels; j++) { 
 					[ cfg ] .forEach( ( { freq, volume, sampleRate, seconds }, k, cfga
-							, fars = [ freq, volume, i, sampleRate, seconds, maxI ] ) => 
+							, fars = [ freq, volume, i, sampleRate, seconds, maxI ] 
+							) => 
 						data .push( asBytes( volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 ) ) 
 						); 
 					} 
@@ -62,53 +63,47 @@
 			} // -- ( styleFn, volumeFn, cfg ) => {} 
 		, { 
 			  style : { 
-				  wave : function( freq, volume, i, sampleRate, seconds ) { 
+				  wave : ( freq, volume, i, sampleRate, seconds ) => 
+					Math .sin( ( 2 * Math .PI ) * ( i / sampleRate ) * freq ) 
 					// wave 
 					// i = 0 -> 0 
 					// i = (sampleRate/freq)/4 -> 1 
 					// i = (sampleRate/freq)/2 -> 0 
 					// i = (sampleRate/freq)*3/4 -> -1 
 					// i = (sampleRate/freq) -> 0 
-					return Math .sin( ( 2 * Math .PI ) * ( i / sampleRate ) * freq ); 
-					} 
-				, squareWave : function( freq, volume, i, sampleRate, seconds, maxI ) { 
+				, squareWave : ( freq, volume, i, sampleRate, seconds, maxI 
+						, coef = sampleRate / freq 
+						) => 
+					( i % coef ) / coef < .5 ? 1 : -1 
 					// square 
 					// i = 0 -> 1 
 					// i = (sampleRate/freq)/4 -> 1 
 					// i = (sampleRate/freq)/2 -> -1 
 					// i = (sampleRate/freq)*3/4 -> -1 
 					// i = (sampleRate/freq) -> 1 
-					var coef = sampleRate / freq; 
-					return (i % coef) / coef < .5 ? 1 : -1; 
-					} 
-				, triangleWave : function( freq, volume, i, sampleRate, seconds, maxI ) { 
-					return Math .asin(Math .sin((2 * Math .PI) * (i / sampleRate) * freq)); 
-					} 
-				, sawtoothWave : function( freq, volume, i, sampleRate, seconds, maxI ) { 
+				, triangleWave : ( freq, volume, i, sampleRate, seconds, maxI ) => 
+					Math .asin( Math .sin( ( 2 * Math .PI ) * ( i / sampleRate ) * freq ) ) 
+				, sawtoothWave : ( freq, volume, i, sampleRate, seconds, maxI 
+						, coef = sampleRate / freq 
+						) => 
+					-1 + 2 * ((i % coef) / coef) 
 					// sawtooth 
 					// i = 0 -> -1 
 					// i = (sampleRate/freq)/4 -> -.5 
 					// i = (sampleRate/freq)/2 -> 0 
 					// i = (sampleRate/freq)*3/4 -> .5 
 					// i = (sampleRate/freq) - delta -> 1 
-					var coef = sampleRate / freq; 
-					return -1 + 2 * ((i % coef) / coef); 
-					} 
 				} 
 			, volume : { 
-				  flat : function( data, freq, volume ) { 
-					return volume * data; 
-					} 
-				, linearFade : function( data, freq, volume, i, sampleRate, seconds, maxI ) { 
-					return volume * ((maxI - i) / maxI) * data; 
-					} 
-				, quadraticFade : function( data, freq, volume, i, sampleRate, seconds, maxI ) { 
+				  flat : ( data, freq, volume ) => volume * data 
+				, linearFade : ( data, freq, volume, i, sampleRate, seconds, maxI ) => 
+					volume * ((maxI - i) / maxI) * data 
+				, quadraticFade : ( data, freq, volume, i, sampleRate, seconds, maxI ) => 
+					volume * ( ( -1 / Math .pow( maxI, 2 ) ) * Math .pow( i, 2 ) + 1 ) * data 
 					// y = -a(x - m)(x + m); and given point (m, 0) 
 					// y = -(1/m^2)*x^2 + 1; 
-					return volume * ( ( -1 / Math .pow( maxI, 2 ) ) * Math .pow( i, 2 ) + 1 ) * data; 
-					} 
 				} 
-			} 
+			} // -- { style, squareWave, triangleWave, sawtoothWave, volume } 
 		); 
 	DataGenerator .style .default = DataGenerator .style .wave; 
 	DataGenerator .volume .default = DataGenerator .volume .linearFade; 
@@ -137,14 +132,18 @@
 			fmtChunk = 
 				[ 
 					  'fmt ' // sub-chunk identifier 
-					, asBytes( 16, 4 ) // chunk-length 
-					, asBytes( 1, 2 ) // audio format (1 is linear quantization) 
-					, asBytes( cfg .channels, 2 ) 
-					, asBytes( cfg .sampleRate, 4 ) 
-					, asBytes( cfg .sampleRate * cfg .channels * cfg .bitDepth / 8, 4 ) // byte rate 
-					, asBytes( cfg .channels * cfg .bitDepth / 8, 2), 
-					, asBytes( cfg .bitDepth, 2 ) 
-					]
+					, ... 
+						[ 
+							  [ 16, 4 ] // chunk-length 
+							, [ 1, 2 ] // audio format (1 is linear quantization) 
+							, [ cfg .channels, 2 ] 
+							, [ cfg .sampleRate, 4 ] 
+							, [ cfg .sampleRate * cfg .channels * cfg .bitDepth / 8, 4 ] // byte rate 
+							, [ cfg .channels * cfg .bitDepth / 8, 2 ], 
+							, [ cfg .bitDepth, 2 ] 
+							] 
+						.map( ( ... ar ) => asBytes( ... ar ) ) 
+					] 
 				.join( '' ) 
 			; 
 		
@@ -165,7 +164,7 @@
 			dataChunk = 
 				[ 
 					  'data' // sub-chunk identifier 
-					, asBytes(samples * cfg .channels * cfg .bitDepth / 8, 4) // chunk length 
+					, asBytes( samples * cfg .channels * cfg .bitDepth / 8, 4 ) // chunk length 
 					, sampleData .join( '' ) 
 					] 
 				.join( '' ) 
