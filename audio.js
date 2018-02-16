@@ -211,13 +211,15 @@
 				getFormDataURI = toBlob; 
 				} catch( e ) {} 
 			} 
-		getFormDataURI( form, data ); // execute about calling.. 
+		return getFormDataURI( form, data ); // execute about calling.. 
 		
 		// functions in getFormDataURI.. 
-		function toBlob( form, data ) { 
-			var view = new Uint8Array( data .length ); 
+		function toBlob( form, data 
+				, view = new Uint8Array( data .length ) 
+				, blob 
+				) { 
 			view .forEach( ( v, i ) => view[ i ] = data .charCodeAt( i ) ); 
-			var blob = new Blob( [ view ], { type : form } ); 
+			blob = new Blob( [ view ], { type : form } ); 
 			return window .webkitURL .createObjectURL( blob ); 
 			} 
 		} 
