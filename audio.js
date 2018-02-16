@@ -12,26 +12,6 @@
 			new Blob(); 
 			canBlob = true; 
 			} catch(e) {} 
-	} 
-	
-	function asBytes( value, bytes ) { 
-		// Convert value into little endian hex bytes 
-		// value - the number as a decimal integer (representing bytes) 
-		// bytes - the number of bytes that this value takes up in a string 
-	
-		// Example: 
-		// asBytes(2835, 4) 
-		// > '\x13\x0b\x00\x00' 
-		var result = []; 
-		for ( ; bytes > 0; bytes-- ) { 
-			result .push( String .fromCharCode( value & 255 ) ); 
-			value >>= 8; 
-			} 
-		return result .join(''); 
-		} 
-	
-	function attack( i ) { 
-		return i < 200 ? (i/200) : 1; 
 		} 
 	
 	var DataGenerator = $ .extend(
@@ -108,6 +88,48 @@
 	DataGenerator .style .default = DataGenerator .style .wave; 
 	DataGenerator .volume .default = DataGenerator .volume .linearFade; 
 	
+	var 
+		Notes = { 
+			  sounds : {} 
+			, getDataURI : function( n, cfg ) { 
+				cfg = cfg || {}; 
+				cfg .freq = noteToFreq( n ); 
+				return toDataURI( cfg ); 
+				} 
+			, getCachedSound : function( n, data ) { 
+				var key = n, cfg; 
+				if ( data && typeof data == "object" ) { 
+					cfg = data; 
+					var l = []; 
+					for ( var attr in data ) { 
+						l .push( attr ); 
+						l .push( data[ attr ] ); 
+						} 
+					l .sort(); 
+					key += `-${ l .join('-') }`; 
+					} 
+				else if ( typeof data != 'undefined' ) { 
+					key = `${ n }.${ key }`; 
+					} 
+				
+				var sound = this .sounds[ key ]; 
+				if ( ! sound ) { 
+					sound = this .sounds[ key ] = new Audio( this .getDataURI( n, cfg ) ); 
+					} 
+				return sound; 
+				} 
+			, noteToFreq 
+			} 
+		; 
+	
+	window .DataGenerator = DataGenerator; 
+	window .Notes = Notes; 
+	
+	// functions.. 
+	
+	function noteToFreq( stepsFromMiddleC ) { 
+		return 440 * Math .pow( 2, ( stepsFromMiddleC + 3 ) / 12 ); 
+		} 
 	
 	function toDataURI( cfg ) { 
 	
@@ -198,47 +220,27 @@
 		else { 
 			return `data:audio/wav;base64,${ btoa( data ) }`; 
 			} 
+		} // -- toDataURI() 
+	
+	function attack( i ) { 
+		return i < 200 ? (i/200) : 1; 
 		} 
 	
-	function noteToFreq( stepsFromMiddleC ) { 
-		return 440 * Math .pow( 2, ( stepsFromMiddleC + 3 ) / 12 ); 
-		} 
+	function asBytes( value, bytes ) { 
+		// Convert value into little endian hex bytes 
+		// value - the number as a decimal integer (representing bytes) 
+		// bytes - the number of bytes that this value takes up in a string 
 	
-	var 
-		Notes = { 
-			  sounds : {} 
-			, getDataURI : function( n, cfg ) { 
-				cfg = cfg || {}; 
-				cfg .freq = noteToFreq( n ); 
-				return toDataURI( cfg ); 
-				} 
-			, getCachedSound : function( n, data ) { 
-				var key = n, cfg; 
-				if ( data && typeof data == "object" ) { 
-					cfg = data; 
-					var l = []; 
-					for ( var attr in data ) { 
-						l .push( attr ); 
-						l .push( data[ attr ] ); 
-						} 
-					l .sort(); 
-					key += `-${ l .join('-') }`; 
-					} 
-				else if ( typeof data != 'undefined' ) { 
-					key = `${ n }.${ key }`; 
-					} 
-				
-				var sound = this .sounds[ key ]; 
-				if ( ! sound ) { 
-					sound = this .sounds[ key ] = new Audio( this .getDataURI( n, cfg ) ); 
-					} 
-				return sound; 
-				} 
-			, noteToFreq : noteToFreq 
+		// Example: 
+		// asBytes(2835, 4) 
+		// > '\x13\x0b\x00\x00' 
+		var result = []; 
+		for ( ; bytes > 0; bytes-- ) { 
+			result .push( String .fromCharCode( value & 255 ) ); 
+			value >>= 8; 
 			} 
-		; 
+		return result .join(''); 
+		} 
 	
-	window .DataGenerator = DataGenerator; 
-	window .Notes = Notes; 
 	} 
 )();
