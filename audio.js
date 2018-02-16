@@ -6,7 +6,7 @@
 ( q => { 
 	
 	var DataGenerator = $ .extend( 
-		  ( styleFn, volumeFn, cfg = {} ) => { 
+		  ( styleFn = DataGenerator .style .default, volumeFn = DataGenerator .volume .default, cfg = {} ) => { 
 			( cfg = { 
 					  freq : 440
 					, volume : 32767 
@@ -162,13 +162,7 @@
 		// Data Sub-Chunk 
 		// 
 		
-		var 
-			sampleData = DataGenerator( 
-				  cfg .styleFn || DataGenerator .style .default 
-				, cfg .volumeFn || DataGenerator .volume .default 
-				, cfg 
-				) 
-			; 
+		var sampleData = DataGenerator( cfg .styleFn, cfg .volumeFn, cfg ); 
 		var samples = sampleData .length; 
 		
 		var 
