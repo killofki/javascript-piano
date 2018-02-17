@@ -12,7 +12,7 @@
 				, cfg = {} 
 				) => { 
 			( cfg = { 
-					  freq : 440
+					  freq : 440 
 					, volume : 32767 
 					, sampleRate : 11025 // Hz 
 					, seconds : .5 
