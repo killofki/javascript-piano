@@ -107,7 +107,7 @@
 					key = `${ n }.${ key }`; 
 					} 
 				
-				return (
+				return ( 
 					   ( this .sounds[ key ] ) 
 					|| ( this .sounds[ key ] = new Audio( this .getDataURI( n, cfg ) ) ) 
 					); 
@@ -154,7 +154,7 @@
 							, [ cfg .channels, 2 ] 
 							, [ cfg .sampleRate, 4 ] 
 							, [ cfg .sampleRate * cfg .channels * cfg .bitDepth / 8, 4 ] // byte rate 
-							, [ cfg .channels * cfg .bitDepth / 8, 2 ], 
+							, [ cfg .channels * cfg .bitDepth / 8, 2 ] 
 							, [ cfg .bitDepth, 2 ] 
 							] 
 						.map( ( [ value, bytes ] ) => asBytes( value, bytes ) ) 
