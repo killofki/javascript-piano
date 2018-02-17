@@ -18,7 +18,7 @@
 					, seconds : .5 
 					, channels : 1 
 					, ... cfg 
-					} )
+					} ) 
 				; 
 			
 			var data = []; 
@@ -70,7 +70,7 @@
 			, volume : { 
 				  flat : ( data, freq, volume ) => volume * data 
 				, linearFade : ( data, freq, volume, i, sampleRate, seconds, maxI ) => 
-					volume * ((maxI - i) / maxI) * data 
+					volume * ( ( maxI - i ) / maxI ) * data 
 				, quadraticFade : ( data, freq, volume, i, sampleRate, seconds, maxI ) => 
 					volume * ( ( -1 / Math .pow( maxI, 2 ) ) * Math .pow( i, 2 ) + 1 ) * data 
 					// y = -a(x - m)(x + m); and given point (m, 0) 
@@ -92,14 +92,13 @@
 			, getCachedSound : function( n, data ) { 
 				var key = n, cfg; 
 				if ( data && typeof data == "object" ) { 
-					cfg = data; 
-					var l = []; 
-					for ( var attr in data ) { 
-						l .push( attr ); 
-						l .push( data[ attr ] ); 
-						} 
-					l .sort(); 
-					key += `-${ l .join('-') }`; 
+					cfg = data; // setter's caller 
+					key += `-${ 
+						[] .concat( ... Object .keys( data ) .map( attr => [ attr, data[ attr ] ] ) ) 
+						.sort() 
+						.join( '-' ) 
+						}` 
+						; 
 					} 
 				else if ( typeof data != 'undefined' ) { 
 					key = `${ n }.${ key }`; 
