@@ -7,8 +7,8 @@
 	
 	var DataGenerator = $ .extend( 
 		  ( 
-				  styleFn = DataGenerator .style .default
-				, volumeFn = DataGenerator .volume .default
+				  styleFn = DataGenerator .style .default 
+				, volumeFn = DataGenerator .volume .default 
 				, cfg = {} 
 				) => { 
 			( cfg = { 
