@@ -94,7 +94,10 @@
 				if ( data && typeof data == "object" ) { 
 					cfg = data; // setter's caller 
 					key += `-${ 
-						[] .concat( ... Object .keys( data ) .map( attr => [ attr, data[ attr ] ] ) ) 
+						[] .concat( ... 
+							Object .keys( data ) 
+							.map( attr => [ attr, data[ attr ] ] ) 
+							) 
 						.sort() 
 						.join( '-' ) 
 						}` 
@@ -113,8 +116,7 @@
 			} 
 		; 
 	
-	window .DataGenerator = DataGenerator; 
-	window .Notes = Notes; 
+	Object .assign( window, { DataGenerator, Notes } ); 
 	
 	// functions.. 
 	
