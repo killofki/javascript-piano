@@ -11,15 +11,16 @@
 				, volumeFn = DataGenerator .volume .default 
 				, cfg = {} 
 				) => { 
-			( cfg = { 
+			cfg = $ .extend( 
+				  { 
 					  freq : 440 
 					, volume : 32767 
 					, sampleRate : 11025 // Hz 
 					, seconds : .5 
 					, channels : 1 
-					, ... cfg 
-					} ) 
-				; 
+					}
+				, cfg 
+				); 
 			
 			var data = []; 
 			var maxI = cfg .sampleRate * cfg .seconds; 
