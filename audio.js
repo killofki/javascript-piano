@@ -145,46 +145,43 @@
 		
 		var 
 			fmtChunk = 
-				[ 
-					  'fmt ' // sub-chunk identifier 
-					, ... 
-						[ 
-							  [ 16, 4 ] // chunk-length 
-							, [ 1, 2 ] // audio format (1 is linear quantization) 
-							, [ cfg .channels, 2 ] 
-							, [ cfg .sampleRate, 4 ] 
-							, [ cfg .sampleRate * cfg .channels * cfg .bitDepth / 8, 4 ] // byte rate 
-							, [ cfg .channels * cfg .bitDepth / 8, 2 ] 
-							, [ cfg .bitDepth, 2 ] 
-							] 
-						.map( ( [ value, bytes ] ) => asBytes( value, bytes ) ) 
-					] 
+				[ cfg, ( [ value, bytes ] ) => asBytes( value, bytes ) ] 
+				.reduce( ( { channels, sampleRate, bitDepth } , F ) => 
+					[ 
+						  'fmt ' // sub-chunk identifier 
+						, ... 
+							[ 
+								  [ 16, 4 ] // chunk-length 
+								, [ 1, 2 ] // audio format (1 is linear quantization) 
+								, [ channels, 2 ] 
+								, [ sampleRate, 4 ] 
+								, [ sampleRate * channels * bitDepth / 8, 4 ] // byte rate 
+								, [ channels * bitDepth / 8, 2 ] 
+								, [ bitDepth, 2 ] 
+								] 
+							.map( F ) 
+						] 
+					) 
 				.join( '' ) 
-			; 
 		
 		// 
 		// Data Sub-Chunk 
 		// 
-		
-		var sampleData = DataGenerator( cfg .styleFn, cfg .volumeFn, cfg ); 
-		var samples = sampleData .length; 
-		
-		var 
-			dataChunk = 
+			, sampleData = DataGenerator( cfg .styleFn, cfg .volumeFn, cfg ) 
+			, samples = sampleData .length 
+			
+			, dataChunk = 
 				[ 
 					  'data' // sub-chunk identifier 
 					, asBytes( samples * cfg .channels * cfg .bitDepth / 8, 4 ) // chunk length 
 					, sampleData .join( '' ) 
 					] 
 				.join( '' ) 
-			; 
 		
 		// 
 		// Header + Sub-Chunks 
 		// 
-		
-		var 
-			data = 
+			, data = 
 				[ 
 					  'RIFF' 
 					, asBytes( 4 + ( 8 + fmtChunk .length ) + ( 8 + dataChunk .length ), 4 ) 
