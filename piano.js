@@ -219,8 +219,12 @@
 					, 'volume' : 'linearFade' 
 					, 'notesOffset' : 0 
 					} ] 
-				
-				, main = [ 
+				, main 
+				, main2 
+				; 
+			
+			data .push( 
+				  ... main = [ 
 					  [ 6, -7, -5 ] 
 					, [ 6, -7, -5 ] 
 					, [ 6, -7, -5 ] 
@@ -246,26 +250,19 @@
 					, [ 6, -12, 0 ] 
 					, [ 6, -12, 0 ] 
 					] 
-				; 
-			
-			data .push .apply( data, main ); 
-			data .push( 
-				  [ 6, -12, 0 ] 
+				, [ 6, -12, 0 ] 
 				, [ 6, -10, -1 ] 
 				, [ 6, -8, -3 ] 
-				); 
-			data .push .apply( data, main ); 
-			data .push( 
-				  [ 6, -12, 0 ] 
+				
+				, ... main 
+				, [ 6, -12, 0 ] 
 				, [ 6, -5 ] 
 				, [ 6, -8 ] 
 				
 				, [ 6, -12 ] 
 				, [ 12 ] 
-				); 
-			
-			var 
-				main2 = [ 
+				
+				, ... main2 = [ 
 					  [ 6, 0, 4 ] 
 					, [ 6, -1, 2 ] 
 					, [ 6 ] 
@@ -289,21 +286,18 @@
 					, [ 6, -1, 2 ] 
 					, [ 6, -1, 2 ] 
 					, [ 6 ] 
-					]
-				; 
-			data .push .apply( data, main2 ); 
-			data .push( 
-				  [ 6, -10, -7 ] 
+					] 
+				
+				, [ 6, -10, -7 ] 
 				, [ 6, -12, -8 ] 
 				, [ 6 ] 
 				
 				, [ 6, -8, 0 ] 
 				, [ 6, -8, 0 ] 
 				, [ 6 ] 
-				); 
-			data .push .apply( data, main2 ); 
-			data .push( 
-				  [ 6, -5, -1 ] 
+				
+				, ... main2 
+				, [ 6, -5, -1 ] 
 				, [ 6, -8, 0 ] 
 				, [ 6, -5 ] 
 				
@@ -312,7 +306,7 @@
 				, [ 6 ] 
 				); 
 			return data; 
-			} )()
+			} )() // -- chopsticks 
 			; 
 		
 		var demoing = false, demoingTimeout; 
@@ -327,10 +321,12 @@
 			if ( ! buildingPiano && ! demoing ) { 
 				demoing = true; 
 				
-				[ 'style', 'volume' ] 
-				.forEach( p => [ cfg[ p ] ] .forEach( cp => cp && ( DataGenerator[ p ] .default = DataGenerator[ p ][ cp ] ) ) ) 
-					; 
-				cfg .notesOffset !== undefined && ( notesOffset = cfg .notesOffset ); 
+				[ 'style', 'volume' ] .forEach( p => [ cfg[ p ] ] .forEach( cp => 
+					cp && ( DataGenerator[ p ] .default = DataGenerator[ p ][ cp ] ) ) 
+					); 
+				[ cfg .notesOffset ] .forEach( cn => 
+					cn !== undefined && ( notesOffset = cn ) 
+					); 
 				
 				$keys 
 				.one( 'build-done.piano', q => { 
@@ -348,13 +344,13 @@
 									for ( var j = 1, len = part .length; j < len; j++ ) { 
 										$keys .trigger( `note-${ part[ j ] + notesOffset }.play` ); 
 										} 
-									}
+									} 
 								, delay * 50 
 								); 
 							} 
 						} )() // -- play() 
 						; 
-					} ) 
+					} ) // -- .one() 
 					; 
 				buildPiano(); 
 				} 
