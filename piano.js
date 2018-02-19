@@ -213,19 +213,16 @@
 	// Demo 
 	// 
 	( undefined => { 
-		var chopsticks = ( q => { 
-			var 
-				  data = [ { 
-					  'style' : 'wave' 
+		var chopsticks = ( ( 
+				main, main2 
+				) => 
+			[ 
+				  { 
+				  'style' : 'wave' 
 					, 'volume' : 'linearFade' 
 					, 'notesOffset' : 0 
-					} ] 
-				, main 
-				, main2 
-				; 
-			
-			data .push( 
-				  ... main = [ 
+					} 
+				, ... main = [ 
 					  [ 6, -7, -5 ] 
 					, [ 6, -7, -5 ] 
 					, [ 6, -7, -5 ] 
@@ -305,9 +302,8 @@
 				, [ 6, -8 ] 
 				, [ 6, -12 ] 
 				, [ 6 ] 
-				); 
-			return data; 
-			} )() // -- chopsticks 
+				]
+			)() // -- chopsticks 
 			; 
 		
 		var demoing = false, demoingTimeout; 
