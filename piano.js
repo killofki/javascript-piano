@@ -236,7 +236,7 @@
 				) => 
 			[ 
 				  { 
-				  'style' : 'wave' 
+					  'style' : 'wave' 
 					, 'volume' : 'linearFade' 
 					, 'notesOffset' : 0 
 					} 
