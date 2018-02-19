@@ -16,7 +16,7 @@
 			, 6 : 1 
 			, 8 : 2 
 			, 10 : 3 
-			} 
+			} // -- blackKeys 
 		; 
 	$ .each( blackKeys, ( k, v ) => blackKeys[ k ] = ` black black${ v }` ); 
 	
@@ -41,6 +41,7 @@
 						, html : `<p><strong>${ camelToText( setting ) }:</strong></p>` 
 						} )
 				.appendTo( '#synth-settings' ) 
+				// -- $opts 
 			; 
 		
 		$ .each( DataGenerator[ setting ], ( name, fn ) => { 
@@ -61,13 +62,13 @@
 							$this .addClass( 'selected' ); 
 							} 
 						} 
-					) ) 
+					) ) // -- .append( '<a>', ... ) 
 				.appendTo( $opts ) 
 					; 
-				} 
-			} )
+				} // -- ( name != 'default' ) 
+			} ) // -- $ .each( DataGenerator[ setting ], ... ) 
 			; 
-		} ) 
+		} ) // -- $ .each( [ 'volume', 'style' ], ... ) 
 		; 
 	
 	
@@ -98,7 +99,7 @@
 			, /*,*/ 222 : 17 // f 
 			, /*]*/ 221 : 18 // f# 
 			, /*enter*/ 13 : 19 // g 
-			} 
+			} // -- keyNotes 
 		, notesShift = -12 
 		, downKeys = {} 
 		; 
@@ -125,9 +126,9 @@
 					notesOffset += ( keyCode == 37 ? -1 : 1 ) * 12; 
 					buildPiano(); 
 					break; 
-				} 
-			} 
-		} ) 
+				} // -- switch() 
+			} // -- ( ! downKeys[ keyCode ] && ... ) 
+		} ) // -- .keydown() 
 	.keyup( evt => delete downKeys[evt.keyCode] ) 
 		; 
 	
@@ -158,7 +159,7 @@
 				&& ( $closestHelp .length || $help .hasClass( 'show' ) ) ) { 
 			$help .toggleClass( 'show' ); 
 			} 
-		} ) 
+		} ) // -- .click() 
 		; 
 	
 	var qTimeout, qCanToggle = true; 
@@ -173,7 +174,7 @@
 				$help .toggleClass( 'show' ); 
 				} 
 			} 
-		} ) 
+		} ) // -- .keypress() 
 		; 
 	
 	window .setTimeout( q => $help .removeClass( 'show' ), 700 ); 
@@ -191,19 +192,21 @@
 				} 
 			} 
 		return true; 
-		} ) 
+		} ) // -- .keydown() 
 		; 
 	
 	// 
 	// Scroll nav 
 	// 
-	$ .each( [ [ '#info', '#below' ], [ '#top', '#content' ] ], ( i, x ) => { 
-		$( x[ 0 ] ) 
-		.click( q => $( 'html,body' ) .animate( { scrollTop : $( x[ 1 ] ) .offset() .top }, 1000) ) 
-		 ; 
-		} ) 
+	$ .each( 
+		  [ [ '#info', '#below' ], [ '#top', '#content' ] ]
+		, ( i, x ) => 
+			$( x[ 0 ] ) 
+			.click( q => $( 'html,body' ) .animate( { scrollTop : $( x[ 1 ] ) .offset() .top }, 1000) ) 
+		) // -- $ .each() 
 		; 
 	
+	// cooked functions.. 
 	
 	// 
 	// Demo 
@@ -323,15 +326,12 @@
 			var cfg = data[ 0 ]; 
 			if ( ! buildingPiano && ! demoing ) { 
 				demoing = true; 
-				   cfg .style 
-				&& ( DataGenerator .style .default = DataGenerator .style[ cfg .style ] ) 
+				
+				[ 'style', 'volume' ] 
+				.forEach( p => [ cfg[ p ] ] .forEach( cp => cp && ( DataGenerator[ p ] .default = DataGenerator[ p ][ cp ] ) ) ) 
 					; 
-				   cfg .volume 
-				&& ( DataGenerator .volume .default = DataGenerator .volume[ cfg .volume ] ) 
-					; 
-				   cfg .notesOffset !== undefined 
-				&& ( notesOffset = cfg .notesOffset ) 
-					; 
+				cfg .notesOffset !== undefined && ( notesOffset = cfg .notesOffset ); 
+				
 				$keys 
 				.one( 'build-done.piano', q => { 
 					//NOTE - jQuery.map flattens arrays 
@@ -352,13 +352,13 @@
 								, delay * 50 
 								); 
 							} 
-						} )() 
+						} )() // -- play() 
 						; 
 					} ) 
 					; 
 				buildPiano(); 
 				} 
-			} 
+			} // -- demo() 
 		
 		function demoHandler( evt ) { 
 			if ( 
@@ -376,7 +376,7 @@
 				} 
 			} // -- demoHandler() 
 		
-		} )()
+		} )() // -- undefined => {} 
 		; 
 	
 	
@@ -671,6 +671,8 @@
 		} )()
 		; 
 	
+	// flow codes.. 
+	
 	if ( isIos ) { 
 		$( q => { 
 			var 
@@ -687,6 +689,8 @@
 			; 
 		} 
 	
+	// functions.. 
+	
 	function blackKeyClass( i ) { return blackKeys[ ( i % 12 ) + ( i < 0 ? 12 : 0 ) ] || ''; } 
 	
 	function buildPiano() { 
@@ -700,7 +704,7 @@
 		// go slower on Chrome... 
 		var i = -12, max = 14, addDelay = /Chrome/i .test( navigator .userAgent ) ? 80 : 0; 
 		
-		// cooked functions.. 
+		// cooked functions in buildPiano() .. 
 		
 		( function go() { // calling by setTimeout self 
 			addKey( i + notesOffset ); 
@@ -713,7 +717,7 @@
 				} 
 			} )(); // -- go() 
 		
-		// functions.. 
+		// functions in buildPiano() .. 
 		
 		function addKey( i ) { 
 			var 
