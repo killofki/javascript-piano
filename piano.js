@@ -332,6 +332,9 @@
 				.one( 'build-done.piano', q => { 
 					//NOTE - jQuery.map flattens arrays 
 					var i = 0, song = $ .map( data, ( x, i ) => i == 0 ? null : [ x ] ); 
+					
+					// cooked functions.. 
+					
 					( function play() { 
 						if ( ! demoing ) { return; } 
 						if ( i >= song .length ) { i = 0; } 
@@ -418,7 +421,8 @@
 				window .clearInterval( loopInterval ); 
 				$ .each( loopTimeouts, ( i, x ) => window .clearTimeout( x ) ); 
 				} 
-			} 
+			} // -- recordStart() 
+		
 		function recordStop() { 
 			if ( recording ) { 
 				recording = false; 
@@ -432,7 +436,7 @@
 					} 
 				$looper .removeClass( 'active' ); 
 				} 
-			} 
+			} // -- recordStop() 
 		
 		function playLoop(data, totalTime) { 
 			loopInterval = 
@@ -442,13 +446,15 @@
 						loopTimeouts = []; 
 						$ .each( 
 							  data
-							, ( i, x ) => loopTimeouts .push( window .setTimeout( q => $keys .trigger( `note-${ x .key }.play` ), x.time ) ) 
+							, ( i, x ) => loopTimeouts .push( window .setTimeout( q => 
+								$keys .trigger( `note-${ x .key }.play` ), x.time 
+								) ) 
 							); 
 						} 
 					, totalTime
 					) 
 				; 
-			} 
+			} // -- playLoop() 
 		
 		} )()
 		; 
@@ -476,26 +482,27 @@
 							, height: H 
 							} 
 						} 
-					) 
+					) // -- $( '<canvas>', ... ) 
 				.attr( 'width', W ) 
 				.attr( 'height', H ) 
 				.prependTo( 'body' ) 
+				// --- $canvas 
 			, canvas = $canvas .get( 0 ) 
 			, ctx = canvas .getContext( '2d' ) 
-			; 
-		
-		var 
-			  keyToData = {} 
+			
+			, keyToData = {} 
 			, keyAnimCounts = {} 
 			; 
 		
-		$keys .on( 'build-done.piano', q =>  
+		$keys 
+		.on( 'build-done.piano', q =>  
 			$keys .find( '.key' ) 
 			.each( function() { 
-				var key = $( this ) .data( 'key' ); 
-				keyToData[ key ] = getData( key ); 
+				[ $( this ) .data( 'key' ) ] .forEach( key =>  
+					keyToData[ key ] = getData( key ) 
+					); 
 				} ) 
-			) 
+			) // -- .on( 'build-done.piano', ... ) 
 			; 
 		
 		$keys 
@@ -570,8 +577,10 @@
 				if ( ++ step < steps + cleanupStepDelay ) { 
 					window .setTimeout( draw, stepRate ); 
 					} 
-				} )(); 
-			} )
+				} )() // -- draw() 
+				; 
+			
+			} ) // -- .on( 'played-note.piano', ... ) 
 			; 
 		
 		// button 
@@ -586,9 +595,9 @@
 						  position : 'absolute' 
 						, top : `${ parseInt( $loop .css( 'top' ) ) + 1 }px` 
 						, right : `${ parseInt( $loop .css( 'right' ) ) + 34 }px` 
-						, width: bW 
-						, height: bH 
-						, cursor: 'pointer' 
+						, width : bW 
+						, height : bH 
+						, cursor : 'pointer' 
 						} } 
 					) 
 				.attr( 'width', bW ) 
@@ -635,23 +644,23 @@
 					  styleFn( freq, vol, i, sampleRate, secs, maxI )
 					, freq, vol, i, sampleRate, secs, maxI 
 					) ); 
-				} 
+				} // -- for( var i ... ) 
 			return data; 
-			} 
+			} // -- getData() 
 		
 		function draw() { 
 			bctx .fillStyle = shouldAnimate ? 'rgba(255,255,0,.75)' : 'rgba(0,0,0,.25)'; 
 			bctx .clearRect( 0, 0, bW, bH ); 
 			bctx .beginPath(); 
 			for ( var i = 0; i < coordsLen; i++ ) { 
-				bctx[ i == 0 ? 'moveTo' : 'lineTo' ]( coords[ i ][ 0 ], coords[ i ][ 1 ] ); 
+				bctx[ i == 0 ? 'moveTo' : 'lineTo' ]( ... [ 0, 1 ] .map( p => coords[ i ][ p ] ) ); 
 				} 
 			bctx .closePath(); 
 			if ( shouldAnimate ) { 
 				bctx.stroke(); 
 				} 
 			bctx .fill(); 
-			} 
+			} // -- draw() 
 		
 		// handlers 
 		function toggleAnimate( evt ) { 
