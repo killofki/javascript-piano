@@ -72,29 +72,35 @@
 	// 
 	
 	var 
-		keyNotes = { 
-			  /*a*/ 65 : 0 // c 
-			, /*w*/ 87 : 1 // c# 
-			, /*s*/ 83 : 2 // d 
-			, /*e*/ 69 : 3 // d# 
-			, /*d*/ 68 : 4 // e 
-			, /*f*/ 70 : 5 // f 
-			, /*t*/ 84 : 6 // f# 
-			, /*g*/ 71 : 7 // g 
-			, /*y*/ 89 : 8 // g# 
-			, /*h*/ 72 : 9 // a 
-			, /*u*/ 85 : 10 // a# 
-			, /*j*/ 74 : 11 // b 
-			, /*k*/ 75 : 12 // c 
-			, /*o*/ 79 : 13 // c# 
-			, /*l*/ 76 : 14 // d 
-			, /*p*/ 80 : 15 // d# 
-			, /*;*/ 186 : 16 // e 
-			, /*;*/ 59 : 16 // e ... gotta figure out why it's sometimes 186 and sometimes 59 
-			, /*,*/ 222 : 17 // f 
-			, /*]*/ 221 : 18 // f# 
-			, /*enter*/ 13 : 19 // g 
-			} // -- keyNotes 
+		  keyNotes = 
+			[ 
+				  {} 
+				, [ 
+					[ 
+						  ... 'we tyu op ]' 
+						, ... 'asdfghjkl;\'\r' // ... enter 
+						, ... '\xba' // ... gotta figure out why it's sometimes 186 and sometimes 59 
+						] 
+					, [ 
+						  ... [ 1, 3, -1, 6, 8, 10, -1, 13, 15, -1, 18 ] 
+						, ... [ 0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19 ] 
+						, ... [ 16 ] 
+						] 
+						// c# d#    f# g# a#    c# d#    f# 
+						// c  d  e  f  g  a  b  c  d  e  f  g 
+						// e 
+					, [ ... '];\'' ] 
+					, [ ... [ 221, 186, 222 ] ] 
+					] 
+				] 
+			.reduce( ( o, [ ta, pa, spc, spv ] ) => ( 
+				  ta .forEach( ( c, p ) => 
+					[ spv[ spc .indexOf( c ) ] || c .toUpperCase() .charCodeAt() ] 
+					.forEach( cv => o[ cv ] = pa[ p ] ) 
+					) 
+				, o 
+				) ) 
+			// -- keyNotes 
 		, notesShift = -12 
 		, downKeys = {} 
 		; 
