@@ -546,221 +546,257 @@
 	// Silly colors 
 	// 
 	( q => { 
-		var shouldAnimate = true, 
-            $piano = $('#piano'), 
-            W = $piano.width(), 
-            H = 500, 
-            $canvas = $('<canvas>', { 
-                css: { 
-                    position: 'absolute', 
-                    top: ($piano.offset().top + $piano.outerHeight() - 1) + 'px', 
-                    left: '50%', 
-                    marginLeft: Math.floor(-W/2) + 'px', // need to figure this out... 
-                    width: W, 
-                    height: H 
-                } 
-            }) 
-            .attr('width', W) 
-            .attr('height', H) 
-            .prependTo('body'), 
-            canvas = $canvas.get(0), 
-            ctx = canvas.getContext('2d'); 
-
-        function choice(x) { 
-            return x[Math.floor(Math.random()*x.length)]; 
-        } 
-
-        function getData(note) { 
-            var data = [], freq = Notes.noteToFreq(note), vol = 1, sampleRate = 2024, secs = .1; 
-            var volumeFn = DataGenerator.volume.default; 
-            var styleFn = DataGenerator.style.default; 
-            var maxI = sampleRate * secs; 
-            for (var i=0; i<maxI; i++) { 
-                var sf = styleFn(freq, vol, i, sampleRate, secs, maxI); 
-                data.push(volumeFn( 
-                    styleFn(freq, vol, i, sampleRate, secs, maxI), 
-                    freq, vol, i, sampleRate, secs, maxI)); 
-            } 
-            return data; 
-        } 
-
-        var keyToData = {}, 
-            keyAnimCounts = {}; 
-
-			$keys .on( 'build-done.piano', q =>  
-				$keys .find( '.key' ) 
-				.each( function() { 
-					var key = $( this ) .data( 'key' ); 
-					keyToData[ key ] = getData( key ); 
-					} ) 
-				) 
+		var 
+			  shouldAnimate = true 
+			, $piano = $( '#piano' ) 
+			, W = $piano .width() 
+			, H = 500 
+			, $canvas = 
+				$(
+					  '<canvas>' 
+					, { 
+						css : { 
+							  position : 'absolute' 
+							, top : `${ $piano .offset() .top + $piano .outerHeight() - 1 }px` 
+							, left : '50%' 
+							, marginLeft : `${ Math .floor( -W / 2 ) }px` // need to figure this out... 
+							, width : W 
+							, height: H 
+							} 
+						} 
+					) 
+				.attr( 'width', W ) 
+				.attr( 'height', H ) 
+				.prependTo( 'body' ) 
+			, canvas = $canvas .get( 0 ) 
+			, ctx = canvas .getContext( '2d' ) 
+			; 
+		
+		function choice( x ) { return x[ Math .floor( Math .random() * x .length ) ]; } 
+		
+		function getData( note ) { 
+			var 
+				  data = [] 
+				, freq = Notes .noteToFreq( note ) 
+				, vol = 1, sampleRate = 2024, secs = .1 
+				, volumeFn = DataGenerator .volume .default 
+				, styleFn = DataGenerator .style .default 
+				, maxI = sampleRate * secs 
 				; 
-
-        $keys.on('played-note.piano', function(evt, key, $elt) { 
-            if (!shouldAnimate) return; 
-
-            var eOffset = $elt.offset(), 
-                eWidth = $elt.width(), 
-                cOffset = $canvas.offset(), 
-                startX = (eOffset.left + eWidth/2) - cOffset.left, 
-                startY = 0, 
-                endY = 200, 
-                amplitude = 8, 
-                data = keyToData[key], 
-                animCount = keyAnimCounts[key] = (keyAnimCounts[key] || 0) + 1; 
-
-            if (!data) return; 
-
-            var len = data.length, 
-                maxTime = 500, 
-                stepRate = 80, 
-                cleanupStepDelay = 8, 
-                steps = Math.floor(maxTime / stepRate), 
-                iPerStep = len / steps, 
-                yPerStep = (endY - startY) / steps, 
-                yIncrement = yPerStep / iPerStep, 
-                step = 0, 
-                i = 0, 
-                color = '#' + choice('f33 33f 3f3 ff3 f3f 3ff'.split(' ')); 
-
-            // startY -> endY in steps 
-            // each step is yPerStep = (endY - startY) / steps long 
-            // each step covers iPerStep = len / steps data points 
-            //     at an increment of yIncrement = yPerStep / iPerStep 
-
-            (function draw() { 
-
-                if (step < steps) { 
-                    ctx.strokeStyle = color; 
-                    ctx.lineWidth = 1; 
-                    ctx.beginPath(); 
-                    ctx.moveTo(startX, startY); 
-                    var newMax = i + iPerStep, first = true; 
-                    for (; i<=newMax; i++) { 
-                        startY += yIncrement; 
-                        ctx[first ? 'moveTo' : 'lineTo'](startX + data[i]*amplitude, startY); 
-                        first = false; 
-                        if (startY > H) return; 
-                    } 
-                    i--; // keep an overlap between draws 
-                    startY -= yIncrement; 
-                    ctx.stroke(); 
-                } 
-
-                if (keyAnimCounts[key] == animCount && step >= cleanupStepDelay) { 
-                    var cleanupStep = step - cleanupStepDelay; 
-                    ctx.clearRect(startX - amplitude - 5, yPerStep * cleanupStep, 
-                                  (amplitude + 5) * 2, yPerStep * (cleanupStep + 1)); 
-                } 
-
-                if (++step < steps + cleanupStepDelay) { 
-                    window.setTimeout(draw, stepRate); 
-                } 
-            })(); 
-        }); 
-
-        // button 
-        var bW = 20, 
-            bH = 20, 
-            $loop = $('.loop'), 
-            $button = $('<canvas>', { 
-                css: { 
-                    position: 'absolute', 
-                    top: (parseInt($loop.css('top')) + 1) + 'px', 
-                    right: (parseInt($loop.css('right')) + 34) + 'px', 
-                    width: bW, 
-                    height: bH, 
-                    cursor: 'pointer' 
-                } 
-            }) 
-            .attr('width', bW) 
-            .attr('height', bH) 
-            .appendTo('#piano'), 
-            button = $button.get(0), 
-            bctx = button.getContext('2d'), 
-            coords = [ 
-                [15, 1], 
-                [5, 9], 
-                [9, 11], 
-                [5, 19], 
-                [15, 11], 
-                [11, 9] 
-            ], 
-            coordsLen = coords.length; 
-
-        bctx.strokeStyle = 'rgba(0,0,0,.5)'; 
-        bctx.lineWidth = .5; 
-
-        function draw() { 
-            bctx.fillStyle = shouldAnimate ? 'rgba(255,255,0,.75)' : 'rgba(0,0,0,.25)'; 
-            bctx.clearRect(0, 0, bW, bH); 
-            bctx.beginPath(); 
-            for (var i=0; i<coordsLen; i++) { 
-                bctx[i == 0 ? 'moveTo' : 'lineTo'](coords[i][0], coords[i][1]); 
-            } 
-            bctx.closePath(); 
-            if (shouldAnimate) bctx.stroke(); 
-            bctx.fill(); 
-        } 
-        draw(); 
-
-        // handlers 
-        function toggleAnimate(evt) { 
-            if (evt.type === 'click' || (evt.keyCode == 56 && !isModifierKey(evt))) { 
-                shouldAnimate = !shouldAnimate; 
-                draw(); 
-            } 
-        } 
-        $(window).keyup(toggleAnimate); 
-        $('.toggle-animate').click(toggleAnimate); 
-        $button.click(toggleAnimate); 
-    })(); 
-
-    if (isIos) { 
-        $(function() { 
-            var $note = $('<div>', { 
-                'class': 'note', 
-                'text': 'Note: sound does not work on iOS, but you can still enjoy pretty wave forms!' 
-            }).appendTo('body'); 
-
-            window.setTimeout(function() { 
-                $note.fadeOut(); 
-            }, 6000); 
-        }); 
-    } 
-
-
-
-    // the below code was a failed experiment to support iOS... 
-
-    // // 
-    // // Generate files for dl... 
-    // // 
-
-    // function generateFilesForDL() { 
-    //     // backup solution for iOS... since they won't play my files :'( 
-    //     // add audio elts to page and then download them all! 
-    //     // https://addons.mozilla.org/en-US/firefox/addon/downthemall/?src=search 
-
-    //     for (var i=0; i<5; i++) { 
-    //         var dataURI = Notes.getDataURI(i); 
-    //         $('body').prepend("<br><br>"); 
-    //         $('<audio>', {controls: 'controls'}) 
-    //             .append('Note ' + i) 
-    //             .append($('<source>', { 
-    //                 src: dataURI, 
-    //                 type: 'audio/wav' 
-    //             })) 
-    //             .prependTo('body'); 
-    //         $('body').prepend(i + ": "); 
-    //     } 
-
-    //     $('body').prepend("<br><br>"); 
-    //     $('<audio>', {controls: 'controls', src: 'note.caf', type: 'audio/wav'}).prependTo('body'); 
-    //     $('body').prepend("note: "); 
-
-    // } 
-    // generateFilesForDL(); 
-
-	})() 
+			for ( var i = 0; i < maxI; i++ ) { 
+				var sf = styleFn( freq, vol, i, sampleRate, secs, maxI ); 
+				data .push( volumeFn( 
+					  styleFn( freq, vol, i, sampleRate, secs, maxI )
+					, freq, vol, i, sampleRate, secs, maxI 
+					) ); 
+				} 
+			return data; 
+			} 
+		
+		var 
+			  keyToData = {} 
+			, keyAnimCounts = {} 
+			; 
+		
+		$keys .on( 'build-done.piano', q =>  
+			$keys .find( '.key' ) 
+			.each( function() { 
+				var key = $( this ) .data( 'key' ); 
+				keyToData[ key ] = getData( key ); 
+				} ) 
+			) 
+			; 
+		
+		$keys 
+		.on( 'played-note.piano', ( evt, key, $elt ) => { 
+			if ( ! shouldAnimate ) { return; } 
+			
+			var 
+				  eOffset = $elt .offset() 
+				, eWidth = $elt .width() 
+				, cOffset = $canvas .offset() 
+				, startX = ( eOffset .left + eWidth / 2 ) - cOffset .left 
+				, startY = 0 
+				, endY = 200 
+				, amplitude = 8 
+				, data = keyToData[ key ] 
+				, animCount = keyAnimCounts[ key ] = ( keyAnimCounts[ key ] || 0 ) + 1 
+				; 
+			
+			if ( ! data ) { return; } 
+			
+			var 
+				  len = data .length 
+				, maxTime = 500 
+				, stepRate = 80 
+				, cleanupStepDelay = 8 
+				, steps = Math .floor( maxTime / stepRate ) 
+				, iPerStep = len / steps 
+				, yPerStep = ( endY - startY ) / steps 
+				, yIncrement = yPerStep / iPerStep 
+				, step = 0 
+				, i = 0 
+				, color = `#${ choice( 'f33 33f 3f3 ff3 f3f 3ff' .split( ' ' ) ) }` 
+				; 
+			
+			// startY -> endY in steps 
+			// each step is yPerStep = (endY - startY) / steps long 
+			// each step covers iPerStep = len / steps data points 
+			//     at an increment of yIncrement = yPerStep / iPerStep 
+			
+			( function draw() { 
+				
+				if ( step < steps ) { 
+					ctx .strokeStyle = color; 
+					ctx .lineWidth = 1; 
+					ctx .beginPath(); 
+					ctx .moveTo( startX, startY ); 
+					var newMax = i + iPerStep, first = true; 
+					for ( ; i <= newMax; i++ ) { 
+						startY += yIncrement; 
+						ctx[ first ? 'moveTo' : 'lineTo' ]( startX + data[ i ] * amplitude, startY ); 
+						first = false; 
+						if ( startY > H ) { return; } 
+						} 
+					i--; // keep an overlap between draws 
+					startY -= yIncrement; 
+					ctx .stroke(); 
+					} 
+				
+				if ( 
+						   keyAnimCounts[ key ] == animCount 
+						&& step >= cleanupStepDelay 
+						) { 
+					var cleanupStep = step - cleanupStepDelay; 
+					ctx .clearRect( 
+						  startX - amplitude - 5, yPerStep * cleanupStep 
+						, ( amplitude + 5 ) * 2, yPerStep * ( cleanupStep + 1 ) 
+						); 
+					} 
+				
+				if ( ++ step < steps + cleanupStepDelay ) { 
+					window .setTimeout( draw, stepRate ); 
+					} 
+				} )(); 
+			} )
+			; 
+		
+		// button 
+		var 
+			  bW = 20 
+			, bH = 20 
+			, $loop = $('.loop') 
+			, $button = 
+				$( 
+					  '<canvas>' 
+					, { css: { 
+						  position : 'absolute' 
+						, top : `${ parseInt( $loop .css( 'top' ) ) + 1 }px` 
+						, right : `${ parseInt( $loop .css( 'right' ) ) + 34 }px` 
+						, width: bW 
+						, height: bH 
+						, cursor: 'pointer' 
+						} } 
+					) 
+				.attr( 'width', bW ) 
+				.attr( 'height', bH ) 
+				.appendTo( '#piano' ) 
+			, button = $button .get( 0 ) 
+			, bctx = button .getContext( '2d' ) 
+			, coords = [ 
+				  [ 15, 1 ] 
+				, [ 5, 9 ] 
+				, [ 9, 11 ] 
+				, [ 5, 19 ] 
+				, [ 15, 11 ] 
+				, [ 11, 9 ] 
+				] 
+			, coordsLen = coords .length 
+			; 
+		
+		bctx .strokeStyle = 'rgba(0,0,0,.5)'; 
+		bctx .lineWidth = .5; 
+		
+		function draw() { 
+			bctx .fillStyle = shouldAnimate ? 'rgba(255,255,0,.75)' : 'rgba(0,0,0,.25)'; 
+			bctx .clearRect( 0, 0, bW, bH ); 
+			bctx .beginPath(); 
+			for ( var i = 0; i < coordsLen; i++ ) { 
+				bctx[ i == 0 ? 'moveTo' : 'lineTo' ]( coords[ i ][ 0 ], coords[ i ][ 1 ] ); 
+				} 
+			bctx .closePath(); 
+			if ( shouldAnimate ) { 
+				bctx.stroke(); 
+				} 
+			bctx .fill(); 
+			} 
+		draw(); 
+		
+		// handlers 
+		function toggleAnimate( evt ) { 
+			if ( 
+					   evt .type === 'click' 
+					|| ( evt .keyCode == 56 && ! isModifierKey( evt ) ) 
+					) { 
+				shouldAnimate = ! shouldAnimate; 
+				draw(); 
+				} 
+			} 
+		$( window ) .keyup( toggleAnimate ); 
+		$( '.toggle-animate' ) .click( toggleAnimate ); 
+		$button .click( toggleAnimate ); 
+		} )()
+		; 
+	
+	if ( isIos ) { 
+		$( q => { 
+			var 
+				$note = 
+					$( '<div>', { 
+						  'class' : 'note' 
+						, 'text' : 'Note: sound does not work on iOS, but you can still enjoy pretty wave forms!' 
+						} ) 
+					.appendTo( 'body' ) 
+				; 
+			
+			window .setTimeout( q => $note .fadeOut(), 6000 ); 
+			} )
+			; 
+		} 
+	
+	
+	
+	// the below code was a failed experiment to support iOS... 
+	
+	// // 
+	// // Generate files for dl... 
+	// // 
+	
+	//	function generateFilesForDL() { 
+	//		// backup solution for iOS... since they won't play my files :'( 
+	//		// add audio elts to page and then download them all! 
+	//		// https://addons.mozilla.org/en-US/firefox/addon/downthemall/?src=search 
+	
+	//		for ( var i = 0; i < 5; i++ ) { 
+	//			var dataURI = Notes .getDataURI( i ); 
+	//			$( 'body' ) .prepend( "<br><br>" ); 
+	//			$( '<audio>', { controls : 'controls' } ) 
+	//			.append( 'Note ' + i ) 
+	//			.append( $( '<source>', { 
+	//				  src : dataURI 
+	//				, type : 'audio/wav' 
+	//				} ) ) 
+	//			.prependTo( 'body' ) 
+	//				; 
+	//			$( 'body' ) .prepend( i + ": " ); 
+	//			} 
+	
+	//		$( 'body' ) .prepend( "<br><br>" ); 
+	//		$( '<audio>', { controls : 'controls', src : 'note.caf', type : 'audio/wav' } ) .prependTo( 'body' ); 
+	//		$( 'body' ) .prepend( "note: " ); 
+	
+	//	} 
+	//	generateFilesForDL(); 
+	
+	} )() 
 	; 
