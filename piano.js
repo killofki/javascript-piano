@@ -34,14 +34,9 @@
 	
 	$ .each( [ 'volume', 'style' ], ( i, setting ) => { 
 		var 
-			$opts = $( 
-					  '<div>'
-					, { 
-						  'class' : 'opts' 
-						, html : `<p><strong>${ camelToText( setting ) }:</strong></p>` 
-						} )
+			$opts = 
+				$( '<div>', { 'class' : 'opts', html : `<p><strong>${ camelToText( setting ) }:</strong></p>` } ) 
 				.appendTo( '#synth-settings' ) 
-				// -- $opts 
 			; 
 		
 		$ .each( DataGenerator[ setting ], ( name, fn ) => { 
@@ -349,7 +344,7 @@
 										} 
 									} 
 								, delay * 50 
-								); 
+								); // -- demoingTimeout 
 							} 
 						} )() // -- play() 
 						; 
@@ -456,7 +451,7 @@
 				; 
 			} // -- playLoop() 
 		
-		} )()
+		} )() // -- q => {} // Looper 
 		; 
 	
 	
@@ -561,7 +556,7 @@
 					i--; // keep an overlap between draws 
 					startY -= yIncrement; 
 					ctx .stroke(); 
-					} 
+					} // -- ( step < steps ) 
 				
 				if ( 
 						   keyAnimCounts[ key ] == animCount 
@@ -572,7 +567,7 @@
 						  startX - amplitude - 5, yPerStep * cleanupStep 
 						, ( amplitude + 5 ) * 2, yPerStep * ( cleanupStep + 1 ) 
 						); 
-					} 
+					} // -- ( keyAnimCounts[ key ] ... ) 
 				
 				if ( ++ step < steps + cleanupStepDelay ) { 
 					window .setTimeout( draw, stepRate ); 
@@ -671,9 +666,9 @@
 				shouldAnimate = ! shouldAnimate; 
 				draw(); 
 				} 
-			} 
+			} // -- toggleAnimate() 
 		
-		} )()
+		} )() // -- q => {} // Silly Colors 
 		; 
 	
 	// flow codes.. 
@@ -692,7 +687,7 @@
 			window .setTimeout( q => $note .fadeOut(), 6000 ); 
 			} )
 			; 
-		} 
+		} // -- ( isIos ) 
 	
 	// functions.. 
 	
