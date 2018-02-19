@@ -20,106 +20,17 @@
 		; 
 	$ .each( blackKeys, ( k, v ) => blackKeys[ k ] = ` black black${ v }` ); 
 	
-	function blackKeyClass( i ) { 
-		return blackKeys[ ( i % 12 ) + ( i < 0 ? 12 : 0 ) ] || ''; 
-		} 
-	
 	var 
 		  $keys = $( '<div>', { 'class' : 'keys' } ) .appendTo( '#piano' ) 
 		, buildingPiano = false 
 		, isIos = navigator .userAgent .match( /(iPhone|iPad)/i ) 
 		; 
 	
-	function buildPiano() { 
-		if ( buildingPiano ) { return; } 
-		buildingPiano = true; 
-		
-		$keys .trigger( 'build-start.piano' ); 
-		$keys .empty() .off( '.play' ); 
-		
-		// delayed for-loop to stop browser from crashing :'( 
-		// go slower on Chrome... 
-		var i = -12, max = 14, addDelay = /Chrome/i .test( navigator .userAgent ) ? 80 : 0; 
-		
-		// cooked functions.. 
-		
-		( function go() { // calling by setTimeout self 
-			addKey( i + notesOffset ); 
-			if ( ++i < max ) { 
-				window .setTimeout( go, addDelay ); 
-				} 
-			else { 
-				buildingPiano = false; 
-				$keys .trigger( 'build-done.piano' ); 
-				} 
-			} )(); 
-		
-		// functions.. 
-		
-		function addKey( i ) { 
-			var 
-				  dataURI = isIos ? '' : Notes .getDataURI( i ) 
-				
-				// trick to deal with note getting hit multiple times before finishing... 
-				, sounds = [ 
-					  new Audio( dataURI ) 
-					, new Audio( dataURI ) 
-					, new Audio( dataURI ) 
-					] 
-				, curSound = 0 
-				, pressedTimeout 
-				; 
-			dataURI = null; 
-			$keys .on( `note-${ i }.play`, play ); 
-			var $key = $( 
-					  '<div>'
-					, { 
-						  'class' : `key${ blackKeyClass( i ) }` 
-						, 'data-key' : i 
-						, mousedown : evt => $keys .trigger( `note-${ i }.play` ) 
-						} )
-				.appendTo( $keys )
-				; 
-			
-			// functions.. 
-			
-			function play( evt ) { 
-				// sound 
-				sounds[ curSound ] .pause(); 
-				try { 
-					sounds[ curSound ] .currentTime = 0.001; //HACK - was for mobile safari, but sort of doesn't matter... 
-					} 
-				catch ( x ) { 
-					console .log( x ); 
-					} 
-				sounds[ curSound ] .play(); 
-				curSound = ++ curSound % sounds .length; 
-				
-				var $k = $keys .find( `[data-key=${ i }]` ) .addClass( 'pressed' ); 
-				
-				//TODO - it'd be nice to have a single event for triggering and reading 
-				$keys .trigger( 'played-note.piano', [ i, $k ] ); 
-				
-				// visual feedback 
-				window .clearTimeout( pressedTimeout ); 
-				pressedTimeout = window .setTimeout( q => $k .removeClass( 'pressed' ), 200); 
-				} 
-			
-			} 
-		
-		} 
-	
 	buildPiano(); 
-	
 	
 	// 
 	// Setup synth controls 
 	// 
-	
-	function camelToText( x ) { 
-		x = x .replace( /([A-Z])/g, ' $1' ); 
-		return x .charAt( 0 ) .toUpperCase() + x .substring( 1 ); 
-		} 
 	
 	$ .each( [ 'volume', 'style' ], ( i, setting ) => { 
 		var 
@@ -145,7 +56,7 @@
 							evt .preventDefault(); 
 							DataGenerator[ setting ] .default = fn; 
 							buildPiano(); 
-							var $this = $(this); 
+							var $this = $( this ); 
 							$this .closest( '.opts' ) .find( '.selected' ) .removeClass( 'selected' ); 
 							$this .addClass( 'selected' ); 
 							} 
@@ -192,8 +103,6 @@
 		, downKeys = {} 
 		; 
 	
-	function isModifierKey( evt ) { return evt.metaKey || evt.shiftKey || evt.altKey; } 
-	
 	$( window ) 
 	.keydown( evt => { 
 		var keyCode = evt .keyCode; 
@@ -231,15 +140,6 @@
 		  colors = 'f33 33f 3f3 ff3 f3f 3ff' .split( ' ' ) 
 		, curColor = 0 
 		; 
-	
-	function colorHandler( evt ) { 
-		if ( evt .type === 'click' || ( evt .keyCode == 67 && ! isModifierKey( evt ) ) ) { 
-			if ( ++ curColor >= colors .length ) { 
-				curColor = 0; 
-				} 
-			document .getElementById( 'piano' ) .style .backgroundColor = '#' + colors[ curColor ]; 
-			} 
-		} 
 	
 	$( window ) .keyup( colorHandler ); 
 	$( '.toggle-color' ) .click( colorHandler ); 
@@ -474,7 +374,7 @@
 					demo( chopsticks ); 
 					} 
 				} 
-			} 
+			} // -- demoHandler() 
 		
 		} )()
 		; 
@@ -786,6 +686,102 @@
 			} )
 			; 
 		} 
+	
+	function blackKeyClass( i ) { return blackKeys[ ( i % 12 ) + ( i < 0 ? 12 : 0 ) ] || ''; } 
+	
+	function buildPiano() { 
+		if ( buildingPiano ) { return; } 
+		buildingPiano = true; 
+		
+		$keys .trigger( 'build-start.piano' ); 
+		$keys .empty() .off( '.play' ); 
+		
+		// delayed for-loop to stop browser from crashing :'( 
+		// go slower on Chrome... 
+		var i = -12, max = 14, addDelay = /Chrome/i .test( navigator .userAgent ) ? 80 : 0; 
+		
+		// cooked functions.. 
+		
+		( function go() { // calling by setTimeout self 
+			addKey( i + notesOffset ); 
+			if ( ++i < max ) { 
+				window .setTimeout( go, addDelay ); 
+				} 
+			else { 
+				buildingPiano = false; 
+				$keys .trigger( 'build-done.piano' ); 
+				} 
+			} )(); // -- go() 
+		
+		// functions.. 
+		
+		function addKey( i ) { 
+			var 
+				  dataURI = isIos ? '' : Notes .getDataURI( i ) 
+				
+				// trick to deal with note getting hit multiple times before finishing... 
+				, sounds = [ 0, 1, 2 ] .map( q => new Audio( dataURI ) ) 
+				, curSound = 0 
+				, pressedTimeout 
+				; 
+			dataURI = null; 
+			$keys .on( `note-${ i }.play`, play ); 
+			var $key = 
+				$( 
+					  '<div>' 
+					, { 
+						  'class' : `key${ blackKeyClass( i ) }` 
+						, 'data-key' : i 
+						, mousedown : evt => $keys .trigger( `note-${ i }.play` ) 
+						} 
+					) 
+				.appendTo( $keys )
+				; 
+			
+			// functions.. 
+			
+			function play( evt ) { 
+				// sound 
+				sounds[ curSound ] .pause(); 
+				try { 
+					sounds[ curSound ] .currentTime = 0.001; //HACK - was for mobile safari, but sort of doesn't matter... 
+					} 
+				catch ( x ) { 
+					console .log( x ); 
+					} 
+				sounds[ curSound ] .play(); 
+				curSound = ++ curSound % sounds .length; 
+				
+				var $k = $keys .find( `[data-key=${ i }]` ) .addClass( 'pressed' ); 
+				
+				//TODO - it'd be nice to have a single event for triggering and reading 
+				$keys .trigger( 'played-note.piano', [ i, $k ] ); 
+				
+				// visual feedback 
+				window .clearTimeout( pressedTimeout ); 
+				pressedTimeout = window .setTimeout( q => $k .removeClass( 'pressed' ), 200); 
+				} // -- play() 
+			
+			} // -- addKey() 
+		
+		} // -- buildPiano() 
+	
+	function camelToText( x ) { 
+		x = x .replace( /([A-Z])/g, ' $1' ); 
+		return x .charAt( 0 ) .toUpperCase() + x .substring( 1 ); 
+		} 
+	
+	function isModifierKey( evt ) { return evt.metaKey || evt.shiftKey || evt.altKey; } 
+	
+	function colorHandler( evt ) { 
+		if ( evt .type === 'click' || ( evt .keyCode == 67 && ! isModifierKey( evt ) ) ) { 
+			if ( ++ curColor >= colors .length ) { 
+				curColor = 0; 
+				} 
+			document .getElementById( 'piano' ) .style .backgroundColor = '#' + colors[ curColor ]; 
+			} 
+		} // -- colorHandler() 
+	
 	
 	
 	
