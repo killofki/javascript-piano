@@ -271,252 +271,282 @@
 	// prevent quick find... 
 	$( window ) 
 	.keydown( evt => { 
-        if (evt.target.nodeName != 'INPUT' && evt.target.nodeName != 'TEXTAREA') { 
-            if (evt.keyCode == 222) { 
-                evt.preventDefault(); 
-                return false; 
-            } 
-        } 
-        return true; 
-    }); 
-
-    // 
-    // Scroll nav 
-    // 
-    $.each([['#info', '#below'], ['#top', '#content']], function(i, x) { 
-        $(x[0]).click(function() { 
-            $('html,body').animate({ 
-                scrollTop: $(x[1]).offset().top 
-            }, 1000); 
-        }); 
-    }); 
-
-
-    // 
-    // Demo 
-    // 
-    (function(undefined) { 
-        var chopsticks = (function() { 
-            var data = [ 
-                { 
-                    'style': 'wave', 
-                    'volume': 'linearFade', 
-                    'notesOffset': 0 
-                } 
-            ]; 
-
-            var main = [ 
-                [6, -7, -5], 
-                [6, -7, -5], 
-                [6, -7, -5], 
-                [6, -7, -5], 
-                [6, -7, -5], 
-                [6, -7, -5], 
-
-                [6, -8, -5], 
-                [6, -8, -5], 
-                [6, -8, -5], 
-                [6, -8, -5], 
-                [6, -8, -5], 
-                [6, -8, -5], 
-
-                [6, -10, -1], 
-                [6, -10, -1], 
-                [6, -10, -1], 
-                [6, -10, -1], 
-                [6, -10, -1], 
-                [6, -10, -1], 
-
-                [6, -12, 0], 
-                [6, -12, 0], 
-                [6, -12, 0] 
-            ]; 
-
-            data.push.apply(data, main); 
-            data.push( 
-                [6, -12, 0], 
-                [6, -10, -1], 
-                [6, -8, -3] 
-            ); 
-            data.push.apply(data, main); 
-            data.push( 
-                [6, -12, 0], 
-                [6, -5], 
-                [6, -8], 
-
-                [6, -12], 
-                [12] 
-            ); 
-
-            var main2 = [ 
-                [6, 0, 4], 
-                [6, -1, 2], 
-                [6], 
-
-                [6, -3, 0], 
-                [6, -5, -1], 
-                [6], 
-
-                [6, -7, -3], 
-                [6, -8, -5], 
-                [6], 
-
-                [6, 0, 4], 
-                [6, 0, 4], 
-                [6], 
-
-                [6, -8, -5], 
-                [6, -10, -7], 
-                [6], 
-
-                [6, -1, 2], 
-                [6, -1, 2], 
-                [6] 
-            ]; 
-            data.push.apply(data, main2); 
-            data.push( 
-                [6, -10, -7], 
-                [6, -12, -8], 
-                [6], 
-
-                    [6, -8, 0], 
-                [6, -8, 0], 
-                [6] 
-            ); 
-            data.push.apply(data, main2); 
-            data.push( 
-                [6, -5, -1], 
-                [6, -8, 0], 
-                [6, -5], 
-
-                [6, -8], 
-                [6, -12], 
-                [6] 
-            ); 
-            return data; 
-        })(); 
-
-
-        var demoing = false, demoingTimeout; 
-        function demo(data) { 
-            var cfg = data[0]; 
-            if (!buildingPiano && !demoing) { 
-                demoing = true; 
-                cfg.style && (DataGenerator.style.default = DataGenerator.style[cfg.style]); 
-                cfg.volume && (DataGenerator.volume.default = DataGenerator.volume[cfg.volume]); 
-                cfg.notesOffset !== undefined && (notesOffset = cfg.notesOffset); 
-                $keys.one('build-done.piano', function() { 
-                    //NOTE - jQuery.map flattens arrays 
-                    var i = 0, song = $.map(data, function(x, i) { return i == 0 ? null : [x]; }); 
-                    (function play() { 
-                        if (!demoing) return; 
-                        if (i >= song.length) { i = 0; } 
-                        var part = song[i++]; 
-                        if (part) { 
-                            var delay = part[0]; 
-                            demoingTimeout = window.setTimeout(function() { 
-                                demoing && play(); 
-                                for (var j=1, len=part.length; j<len; j++) { 
-                                    $keys.trigger('note-'+(part[j]+notesOffset)+'.play'); 
-                                } 
-                            }, delay*50); 
-                        } 
-                    })(); 
-                }); 
-                buildPiano(); 
-            } 
-        } 
-
-        function demoHandler(evt) { 
-            if (evt.type === 'click' || (evt.keyCode == 77 && !isModifierKey(evt))) { 
-                if (demoing) { 
-                    demoing = false; 
-                    window.clearTimeout(demoingTimeout); 
-                    $keys.unbind('build-done.piano'); 
-                } else { 
-                    demo(chopsticks); 
-                } 
-            } 
-        } 
-
-        $(window).keyup(demoHandler); 
-        $('.toggle-demo').click(demoHandler); 
-    })(); 
-
-
-    // 
-    // Looper 
-    // 
-    (function() { 
-        var $looper = $('.loop'), 
-            recording = false, 
-            startTime, 
-            totalTime, 
-            data, 
-            stopTimeout, 
-            loopInterval, loopTimeouts = []; 
-
-        $keys.on('played-note.piano', function(evt, key) { 
-            if (recording) { 
-                data.push({'key': key, 'time': new Date().getTime()}); 
-            } 
-        }); 
-
-        function recordStart() { 
-            if (!recording) { 
-                data = []; 
-                startTime = new Date().getTime(); 
-                recording = true; 
-                window.clearTimeout(stopTimeout); 
-                stopTimeout = window.setTimeout(recordStop, 60*1000); // 1 minute max? 
-                $looper.addClass('active'); 
-
-                // stop old loop 
-                window.clearInterval(loopInterval); 
-                $.each(loopTimeouts, function(i, x) { window.clearTimeout(x); }); 
-            } 
-        } 
-        function recordStop() { 
-            if (recording) { 
-                recording = false; 
-                totalTime = new Date().getTime() - startTime; 
-                window.clearTimeout(stopTimeout); 
-                for (var i=0, len=data.length; i<len; i++) { 
-                    data[i].time = data[i].time - startTime; 
-                } 
-                if (data.length) { 
-                    playLoop(data, totalTime); 
-                } 
-                $looper.removeClass('active'); 
-            } 
-        } 
-
-        function playLoop(data, totalTime) { 
-            loopInterval = window.setInterval(function() { 
-                loopTimeouts = []; 
-                $.each(data, function(i, x) { 
-                    loopTimeouts.push(window.setTimeout(function() { 
-                        $keys.trigger('note-'+x.key+'.play'); 
-                    }, x.time)); 
-                }); 
-            }, totalTime); 
-        } 
-
-        $looper.mousedown(recordStart).mouseup(recordStop); 
-
-        $(window).on('keydown keyup', function(evt) { 
-            if (evt.which == 57 && !isModifierKey(evt)) { 
-                evt.type == 'keydown' ? recordStart() : recordStop(); 
-            } 
-        }); 
-    })(); 
-
-
-    // 
-    // Silly colors 
-    // 
-    (function() { 
-        var shouldAnimate = true, 
+		if ( 
+				   evt .target .nodeName != 'INPUT' 
+				&& evt .target .nodeName != 'TEXTAREA' 
+				) { 
+			if ( evt .keyCode == 222 ) { 
+				evt .preventDefault(); 
+				return false; 
+				} 
+			} 
+		return true; 
+		} ) 
+		; 
+	
+	// 
+	// Scroll nav 
+	// 
+	$ .each( [ [ '#info', '#below' ], [ '#top', '#content' ] ], ( i, x ) => { 
+		$( x[ 0 ] ) 
+		.click( q => $( 'html,body' ) .animate( { scrollTop : $( x[ 1 ] ) .offset() .top }, 1000) ) 
+		 ; 
+		} ) 
+		; 
+	
+	
+	// 
+	// Demo 
+	// 
+	( undefined => { 
+		var chopsticks = ( q => { 
+			var 
+				  data = [ { 
+					  'style' : 'wave' 
+					, 'volume' : 'linearFade' 
+					, 'notesOffset' : 0 
+					} ] 
+				
+				, main = [ 
+					  [ 6, -7, -5 ] 
+					, [ 6, -7, -5 ] 
+					, [ 6, -7, -5 ] 
+					, [ 6, -7, -5 ] 
+					, [ 6, -7, -5 ] 
+					, [ 6, -7, -5 ] 
+					
+					, [6, -8, -5] 
+					, [6, -8, -5] 
+					, [6, -8, -5] 
+					, [6, -8, -5] 
+					, [6, -8, -5] 
+					, [6, -8, -5] 
+					
+					, [6, -10, -1] 
+					, [6, -10, -1] 
+					, [6, -10, -1] 
+					, [6, -10, -1] 
+					, [6, -10, -1] 
+					, [6, -10, -1] 
+					
+					, [6, -12, 0] 
+					, [6, -12, 0] 
+					, [6, -12, 0] 
+					] 
+				; 
+			
+			data .push .apply( data, main ); 
+			data .push( 
+				  [6, -12, 0] 
+				, [6, -10, -1] 
+				, [6, -8, -3] 
+				); 
+			data .push .apply( data, main ); 
+			data .push( 
+				  [ 6, -12, 0 ] 
+				, [ 6, -5 ] 
+				, [ 6, -8 ] 
+				
+				, [ 6, -12 ] 
+				, [ 12 ] 
+				); 
+			
+			var 
+				main2 = [ 
+					  [ 6, 0, 4 ] 
+					, [ 6, -1, 2 ] 
+					, [ 6 ] 
+					
+					, [ 6, -3, 0 ] 
+					, [ 6, -5, -1 ] 
+					, [ 6 ] 
+					
+					, [ 6, -7, -3 ] 
+					, [ 6, -8, -5 ] 
+					, [ 6 ] 
+					
+					, [ 6, 0, 4 ] 
+					, [ 6, 0, 4 ] 
+					, [ 6 ] 
+					
+					, [ 6, -8, -5 ] 
+					, [ 6, -10, -7 ] 
+					, [ 6 ] 
+					
+					, [ 6, -1, 2 ] 
+					, [ 6, -1, 2 ] 
+					, [ 6 ] 
+					]
+				; 
+			data .push .apply( data, main2 ); 
+			data .push( 
+				  [ 6, -10, -7 ] 
+				, [ 6, -12, -8 ] 
+				, [ 6 ] 
+				
+				, [ 6, -8, 0 ] 
+				, [ 6, -8, 0 ] 
+				, [ 6 ] 
+				); 
+			data .push .apply( data, main2 ); 
+			data .push( 
+				  [ 6, -5, -1 ] 
+				, [ 6, -8, 0 ] 
+				, [ 6, -5 ] 
+				
+				, [ 6, -8 ] 
+				, [ 6, -12 ] 
+				, [ 6 ] 
+				); 
+			return data; 
+			} )()
+			; 
+		
+		
+		var demoing = false, demoingTimeout; 
+		function demo( data ) { 
+			var cfg = data[ 0 ]; 
+			if ( ! buildingPiano && ! demoing ) { 
+				demoing = true; 
+				   cfg .style 
+				&& ( DataGenerator .style .default = DataGenerator .style[ cfg .style ] ) 
+					; 
+				   cfg .volume 
+				&& ( DataGenerator .volume .default = DataGenerator .volume[ cfg .volume ] ) 
+					; 
+				   cfg .notesOffset !== undefined 
+				&& ( notesOffset = cfg .notesOffset ) 
+					; 
+				$keys 
+				.one( 'build-done.piano', q => { 
+					//NOTE - jQuery.map flattens arrays 
+					var i = 0, song = $ .map( data, ( x, i ) => i == 0 ? null : [ x ] ); 
+					( function play() { 
+						if ( ! demoing ) { return; } 
+						if ( i >= song .length ) { i = 0; } 
+						var part = song[ i++ ]; 
+						if ( part ) { 
+							var delay = part[ 0 ]; 
+							demoingTimeout = window .setTimeout( 
+								  q => { 
+									demoing && play(); 
+									for ( var j = 1, len = part .length; j < len; j++ ) { 
+										$keys .trigger( `note-${ part[ j ] + notesOffset }.play` ); 
+										} 
+									}
+								, delay * 50 
+								); 
+							} 
+						} )() 
+						; 
+					} ) 
+					; 
+				buildPiano(); 
+				} 
+			} 
+		
+		function demoHandler( evt ) { 
+			if ( 
+					   evt .type === 'click' 
+					|| ( evt .keyCode == 77 && ! isModifierKey( evt ) ) 
+					) { 
+				if ( demoing ) { 
+					demoing = false; 
+					window .clearTimeout( demoingTimeout ); 
+					$keys .unbind( 'build-done.piano' ); 
+					} 
+				else { 
+					demo( chopsticks ); 
+					} 
+				} 
+			} 
+		
+		$( window ) .keyup( demoHandler ); 
+		$( '.toggle-demo' ) .click( demoHandler ); 
+		} )()
+		; 
+	
+	
+	// 
+	// Looper 
+	// 
+	( q => { 
+		var 
+			  $looper = $( '.loop' ) 
+			, recording = false 
+			, startTime 
+			, totalTime 
+			, data 
+			, stopTimeout 
+			, loopInterval, loopTimeouts = [] 
+			; 
+		
+		$keys .on( 
+			  'played-note.piano'
+			, ( evt, key ) => recording && data .push( { 'key' : key, 'time' : new Date() .getTime() } ) 
+			); 
+		
+		function recordStart() { 
+			if ( ! recording ) { 
+				data = []; 
+				startTime = new Date() .getTime(); 
+				recording = true; 
+				window .clearTimeout( stopTimeout ); 
+				stopTimeout = window .setTimeout( recordStop, 60 * 1000 ); // 1 minute max? 
+				$looper .addClass( 'active' ); 
+				
+				// stop old loop 
+				window .clearInterval( loopInterval ); 
+				$ .each( loopTimeouts, ( i, x ) => window .clearTimeout( x ) ); 
+				} 
+			} 
+		function recordStop() { 
+			if ( recording ) { 
+				recording = false; 
+				totalTime = new Date() .getTime() - startTime; 
+				window .clearTimeout( stopTimeout ); 
+				for ( var i = 0, len = data .length; i < len; i++ ) { 
+					data[ i ] .time = data[ i ] .time - startTime; 
+					} 
+				if ( data .length ) { 
+					playLoop( data, totalTime ); 
+					} 
+				$looper .removeClass( 'active' ); 
+				} 
+			} 
+		
+		function playLoop(data, totalTime) { 
+			loopInterval = 
+				window 
+				.setInterval( 
+					  q => { 
+						loopTimeouts = []; 
+						$ .each( 
+							  data
+							, ( i, x ) => loopTimeouts .push( window .setTimeout( q => $keys .trigger( `note-${ x .key }.play` ), x.time ) ) 
+							); 
+						} 
+					, totalTime
+					) 
+				; 
+			} 
+		
+		$looper .mousedown( recordStart ) .mouseup( recordStop ); 
+		
+		$( window ) .on( 'keydown keyup', evt => 
+			   evt.which == 57 
+			&& ! isModifierKey( evt ) 
+			&& ( evt .type == 'keydown' ? recordStart() : recordStop() ) 
+			); 
+		} )()
+		; 
+	
+	
+	// 
+	// Silly colors 
+	// 
+	( q => { 
+		var shouldAnimate = true, 
             $piano = $('#piano'), 
             W = $piano.width(), 
             H = 500, 
@@ -557,12 +587,14 @@
         var keyToData = {}, 
             keyAnimCounts = {}; 
 
-        $keys.on('build-done.piano', function() { 
-            $keys.find('.key').each(function() { 
-                var key = $(this).data('key'); 
-                keyToData[key] = getData(key); 
-            }); 
-        }); 
+			$keys .on( 'build-done.piano', q =>  
+				$keys .find( '.key' ) 
+				.each( function() { 
+					var key = $( this ) .data( 'key' ); 
+					keyToData[ key ] = getData( key ); 
+					} ) 
+				) 
+				; 
 
         $keys.on('played-note.piano', function(evt, key, $elt) { 
             if (!shouldAnimate) return; 
