@@ -37,20 +37,52 @@
 		$keys .trigger( 'build-start.piano' ); 
 		$keys .empty() .off( '.play' ); 
 		
+		// delayed for-loop to stop browser from crashing :'( 
+		// go slower on Chrome... 
+		var i = -12, max = 14, addDelay = /Chrome/i .test( navigator .userAgent ) ? 80 : 0; 
+		
+		// cooked functions.. 
+		
+		( function go() { // calling by setTimeout self 
+			addKey( i + notesOffset ); 
+			if ( ++i < max ) { 
+				window .setTimeout( go, addDelay ); 
+				} 
+			else { 
+				buildingPiano = false; 
+				$keys .trigger( 'build-done.piano' ); 
+				} 
+			} )(); 
+		
+		// functions.. 
+		
 		function addKey( i ) { 
 			var 
 				  dataURI = isIos ? '' : Notes .getDataURI( i ) 
 				
 				// trick to deal with note getting hit multiple times before finishing... 
 				, sounds = [ 
-					  new Audio(dataURI) 
-					, new Audio(dataURI) 
-					, new Audio(dataURI) 
+					  new Audio( dataURI ) 
+					, new Audio( dataURI ) 
+					, new Audio( dataURI ) 
 					] 
 				, curSound = 0 
 				, pressedTimeout 
 				; 
 			dataURI = null; 
+			$keys .on( `note-${ i }.play`, play ); 
+			var $key = $( 
+					  '<div>'
+					, { 
+						  'class' : `key${ blackKeyClass( i ) }` 
+						, 'data-key' : i 
+						, mousedown : evt => $keys .trigger( `note-${ i }.play` ) 
+						} )
+				.appendTo( $keys )
+				; 
+			
+			// functions.. 
+			
 			function play( evt ) { 
 				// sound 
 				sounds[ curSound ] .pause(); 
@@ -72,31 +104,9 @@
 				window .clearTimeout( pressedTimeout ); 
 				pressedTimeout = window .setTimeout( q => $k .removeClass( 'pressed' ), 200); 
 				} 
-			$keys .on( `note-${ i }.play`, play ); 
-			var $key = $( 
-					  '<div>'
-					, { 
-						  'class' : `key${ blackKeyClass( i ) }` 
-						, 'data-key' : i 
-						, mousedown : evt => $keys .trigger( `note-${ i }.play` ) 
-						} )
-				.appendTo( $keys )
-				; 
+			
 			} 
 		
-		// delayed for-loop to stop browser from crashing :'( 
-		// go slower on Chrome... 
-		var i = -12, max = 14, addDelay = /Chrome/i .test( navigator .userAgent ) ? 80 : 0; 
-		( function go() { // calling by setTimeout self 
-			addKey( i + notesOffset ); 
-			if ( ++i < max ) { 
-				window .setTimeout( go, addDelay ); 
-				} 
-			else { 
-				buildingPiano = false; 
-				$keys .trigger( 'build-done.piano' ); 
-				} 
-			} )(); 
 		} 
 	
 	buildPiano(); 
@@ -315,31 +325,31 @@
 					, [ 6, -7, -5 ] 
 					, [ 6, -7, -5 ] 
 					
-					, [6, -8, -5] 
-					, [6, -8, -5] 
-					, [6, -8, -5] 
-					, [6, -8, -5] 
-					, [6, -8, -5] 
-					, [6, -8, -5] 
+					, [ 6, -8, -5 ] 
+					, [ 6, -8, -5 ] 
+					, [ 6, -8, -5 ] 
+					, [ 6, -8, -5 ] 
+					, [ 6, -8, -5 ] 
+					, [ 6, -8, -5 ] 
 					
-					, [6, -10, -1] 
-					, [6, -10, -1] 
-					, [6, -10, -1] 
-					, [6, -10, -1] 
-					, [6, -10, -1] 
-					, [6, -10, -1] 
+					, [ 6, -10, -1 ] 
+					, [ 6, -10, -1 ] 
+					, [ 6, -10, -1 ] 
+					, [ 6, -10, -1 ] 
+					, [ 6, -10, -1 ] 
+					, [ 6, -10, -1 ] 
 					
-					, [6, -12, 0] 
-					, [6, -12, 0] 
-					, [6, -12, 0] 
+					, [ 6, -12, 0 ] 
+					, [ 6, -12, 0 ] 
+					, [ 6, -12, 0 ] 
 					] 
 				; 
 			
 			data .push .apply( data, main ); 
 			data .push( 
-				  [6, -12, 0] 
-				, [6, -10, -1] 
-				, [6, -8, -3] 
+				  [ 6, -12, 0 ] 
+				, [ 6, -10, -1 ] 
+				, [ 6, -8, -3 ] 
 				); 
 			data .push .apply( data, main ); 
 			data .push( 
@@ -402,8 +412,13 @@
 			} )()
 			; 
 		
-		
 		var demoing = false, demoingTimeout; 
+		
+		$( window ) .keyup( demoHandler ); 
+		$( '.toggle-demo' ) .click( demoHandler ); 
+		
+		// functions.. 
+		
 		function demo( data ) { 
 			var cfg = data[ 0 ]; 
 			if ( ! buildingPiano && ! demoing ) { 
@@ -461,8 +476,6 @@
 				} 
 			} 
 		
-		$( window ) .keyup( demoHandler ); 
-		$( '.toggle-demo' ) .click( demoHandler ); 
 		} )()
 		; 
 	
@@ -485,6 +498,16 @@
 			  'played-note.piano'
 			, ( evt, key ) => recording && data .push( { 'key' : key, 'time' : new Date() .getTime() } ) 
 			); 
+		
+		$looper .mousedown( recordStart ) .mouseup( recordStop ); 
+		
+		$( window ) .on( 'keydown keyup', evt => 
+			   evt.which == 57 
+			&& ! isModifierKey( evt ) 
+			&& ( evt .type == 'keydown' ? recordStart() : recordStop() ) 
+			); 
+		
+		// functions.. 
 		
 		function recordStart() { 
 			if ( ! recording ) { 
@@ -531,13 +554,6 @@
 				; 
 			} 
 		
-		$looper .mousedown( recordStart ) .mouseup( recordStop ); 
-		
-		$( window ) .on( 'keydown keyup', evt => 
-			   evt.which == 57 
-			&& ! isModifierKey( evt ) 
-			&& ( evt .type == 'keydown' ? recordStart() : recordStop() ) 
-			); 
 		} )()
 		; 
 	
@@ -571,27 +587,6 @@
 			, canvas = $canvas .get( 0 ) 
 			, ctx = canvas .getContext( '2d' ) 
 			; 
-		
-		function choice( x ) { return x[ Math .floor( Math .random() * x .length ) ]; } 
-		
-		function getData( note ) { 
-			var 
-				  data = [] 
-				, freq = Notes .noteToFreq( note ) 
-				, vol = 1, sampleRate = 2024, secs = .1 
-				, volumeFn = DataGenerator .volume .default 
-				, styleFn = DataGenerator .style .default 
-				, maxI = sampleRate * secs 
-				; 
-			for ( var i = 0; i < maxI; i++ ) { 
-				var sf = styleFn( freq, vol, i, sampleRate, secs, maxI ); 
-				data .push( volumeFn( 
-					  styleFn( freq, vol, i, sampleRate, secs, maxI )
-					, freq, vol, i, sampleRate, secs, maxI 
-					) ); 
-				} 
-			return data; 
-			} 
 		
 		var 
 			  keyToData = {} 
@@ -643,6 +638,8 @@
 			// each step is yPerStep = (endY - startY) / steps long 
 			// each step covers iPerStep = len / steps data points 
 			//     at an increment of yIncrement = yPerStep / iPerStep 
+			
+			// cooked functions.. 
 			
 			( function draw() { 
 				
@@ -717,6 +714,35 @@
 		bctx .strokeStyle = 'rgba(0,0,0,.5)'; 
 		bctx .lineWidth = .5; 
 		
+		draw(); 
+		
+		$( window ) .keyup( toggleAnimate ); 
+		$( '.toggle-animate' ) .click( toggleAnimate ); 
+		$button .click( toggleAnimate ); 
+		
+		// functions.. 
+		
+		function choice( x ) { return x[ Math .floor( Math .random() * x .length ) ]; } 
+		
+		function getData( note ) { 
+			var 
+				  data = [] 
+				, freq = Notes .noteToFreq( note ) 
+				, vol = 1, sampleRate = 2024, secs = .1 
+				, volumeFn = DataGenerator .volume .default 
+				, styleFn = DataGenerator .style .default 
+				, maxI = sampleRate * secs 
+				; 
+			for ( var i = 0; i < maxI; i++ ) { 
+				var sf = styleFn( freq, vol, i, sampleRate, secs, maxI ); 
+				data .push( volumeFn( 
+					  styleFn( freq, vol, i, sampleRate, secs, maxI )
+					, freq, vol, i, sampleRate, secs, maxI 
+					) ); 
+				} 
+			return data; 
+			} 
+		
 		function draw() { 
 			bctx .fillStyle = shouldAnimate ? 'rgba(255,255,0,.75)' : 'rgba(0,0,0,.25)'; 
 			bctx .clearRect( 0, 0, bW, bH ); 
@@ -730,7 +756,6 @@
 				} 
 			bctx .fill(); 
 			} 
-		draw(); 
 		
 		// handlers 
 		function toggleAnimate( evt ) { 
@@ -742,9 +767,7 @@
 				draw(); 
 				} 
 			} 
-		$( window ) .keyup( toggleAnimate ); 
-		$( '.toggle-animate' ) .click( toggleAnimate ); 
-		$button .click( toggleAnimate ); 
+		
 		} )()
 		; 
 	
