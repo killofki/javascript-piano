@@ -58,7 +58,7 @@
 				, sawtoothWave : ( freq, volume, i, sampleRate, seconds, maxI 
 						, coef = sampleRate / freq 
 						) => 
-					-1 + 2 * ( (i % coef) / coef ) 
+					-1 + 2 * ( ( i % coef) / coef ) 
 					// sawtooth 
 					// i = 0 -> -1 
 					// i = (sampleRate/freq)/4 -> -.5 
