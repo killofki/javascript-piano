@@ -219,7 +219,7 @@
 		} 
 	
 	function attack( i ) { 
-		return i < 200 ? (i/200) : 1; 
+		return i < 200 ? ( i / 200 ) : 1; 
 		} 
 	
 	function asBytes( value, bytes ) { 
