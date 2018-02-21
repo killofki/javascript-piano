@@ -62,7 +62,7 @@ html, body { height : 100%; }
 	border-radius : 0 0 4px 4px; 
 	} 
   .key.pressed
-, .key :active { 
+, .key:active { 
 	background : #f4f3f3; 
 	box-shadow : inset 3px 2px 3px #999, inset -3px 2px 3px #999; 
 	} 
@@ -71,7 +71,7 @@ html, body { height : 100%; }
 	margin : 0; 
 	z-index : 2; 
 	} 
-.key.black :after { 
+.key.black:after { 
 	content : ""; 
 	position : absolute; 
 	top : -2px; 
@@ -83,14 +83,14 @@ html, body { height : 100%; }
 	border-radius : 0 0 4px 4px; 
 	box-shadow : 1px 1px 0 #555, 2px 2px 0 #555; 
 	} 
-.key.black1 :after { 
+.key.black1:after { 
 	left : -20px; 
 	} 
-.key.black3 :after { 
+.key.black3:after { 
 	left : -16px; 
 	} 
-  .key.black.pressed :after 
-, .key.black :active :after { 
+  .key.black.pressed:after 
+, .key.black:active:after { 
 	background-color : #222; 
 	} 
 
@@ -135,7 +135,7 @@ h1 {
   .loop.active 
 , .loop :active 
 , .help.show 
-, .help :active { 
+, .help:active { 
 	box-shadow : inset 1px 1px 0 rgba(0, 0, 0, .35); 
 	} 
 
@@ -170,11 +170,11 @@ h1 {
 	cursor : default; 
 	} 
 
-.help.show :focus { outline : none; } 
+.help.show:focus { outline : none; } 
 
 .opts { margin : 0; overflow : hidden; zoom : 1; width : 740px; height : 36px; line-height : 36px; } 
 .opts p { float : left; margin : 0 10px 0 0; } 
-.opts p :first-child { width : 6em; } 
+.opts p:first-child { width : 6em; } 
 .opts p .selected { color : #999; font-style : italic; } 
 
 .toggle { cursor : pointer; } 
@@ -187,10 +187,10 @@ h1 {
 	text-decoration : none; 
 	} 
 
-.help a :before { 
+.help a:before { 
 	content : "_"; 
 	} 
-.help a :after { 
+.help a:after { 
 	content : "_"; 
 	} 
 
@@ -236,11 +236,11 @@ h1 {
 	right : 0; 
 	} 
 
-#top :hover { 
+#top:hover { 
 	color : red; 
 	} 
 
-#info :hover { 
+#info:hover { 
 	color : #eee; 
 	text-shadow : 1px 1px 0 #000; 
 	background : #333; 
