@@ -130,7 +130,7 @@
 				} // -- switch() 
 			} // -- ( ! downKeys[ keyCode ] && ... ) 
 		} ) // -- .keydown() 
-	.keyup( evt => delete downKeys[evt.keyCode] ) 
+	.keyup( evt => void( delete downKeys[evt.keyCode] ) ) 
 		; 
 	
 	
@@ -364,11 +364,11 @@
 		
 		$looper .mousedown( recordStart ) .mouseup( recordStop ); 
 		
-		$( window ) .on( 'keydown keyup', evt => 
+		$( window ) .on( 'keydown keyup', evt => void( 
 			   evt.which == 57 
 			&& ! isModifierKey( evt ) 
 			&& ( evt .type == 'keydown' ? recordStart() : recordStop() ) 
-			); 
+			) ); 
 		
 		// functions.. 
 		
