@@ -89,8 +89,8 @@ html, body { height : 100%; }
 .key.black3 :after { 
 	left : -16px; 
 	} 
-.key.black.pressed :after, 
-.key.black :active :after { 
+  .key.black.pressed :after 
+, .key.black :active :after { 
 	background-color : #222; 
 	} 
 
@@ -132,10 +132,10 @@ h1 {
 	cursor : pointer; 
 	} 
 
-.loop.active, 
-.loop :active, 
-.help.show, 
-.help :active { 
+  .loop.active 
+, .loop :active 
+, .help.show 
+, .help :active { 
 	box-shadow : inset 1px 1px 0 rgba(0, 0, 0, .35); 
 	} 
 
