@@ -24,15 +24,13 @@
 			
 			var data = []; 
 			var maxI = cfg .sampleRate * cfg .seconds; 
-			for ( var i = 0; i < maxI; i++ ) { 
-				for ( var j = 0; j < cfg .channels; j++) { 
-					[ cfg ] .forEach( ( { freq, volume, sampleRate, seconds }, k, cfga 
-							, fars = [ freq, volume, i, sampleRate, seconds, maxI ] 
-							) => 
-						data .push( asBytes( volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 ) ) 
-						); 
-					} 
-				} 
+			forIn( [ 0, maxI ], i => forIn( [ 0, cfg .channels ], j => 
+				[ cfg ] .forEach( ( { freq, volume, sampleRate, seconds }, k, cfga 
+						, fars = [ freq, volume, i, sampleRate, seconds, maxI ] 
+						) => 
+					data .push( asBytes( volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 ) ) 
+					) 
+				) ); 
 			return data; 
 			} // -- ( styleFn, volumeFn, cfg ) => {} // default value over $ 
 		, { 
@@ -238,6 +236,12 @@
 			value >>= 8; 
 			} 
 		return result .join(''); 
+		} 
+	
+	function forIn( [ i, n ], F ){ 
+		for ( i = 0; i < n; i += 1 ) { 
+			F( i ); 
+			} 
 		} 
 	
 	} 
