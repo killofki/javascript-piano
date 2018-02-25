@@ -278,7 +278,7 @@
 		$( window ) .keyup( demoHandler ); 
 		$( '.toggle-demo' ) .click( demoHandler ); 
 		
-		// functions.. 
+		// functions in undefined => {} .. 
 		
 		function demo( data ) { 
 			var cfg = data[ 0 ]; 
@@ -297,7 +297,7 @@
 					//NOTE - jQuery.map flattens arrays 
 					var i = 0, song = $ .map( data, ( x, i ) => i == 0 ? null : [ x ] ); 
 					
-					// cooked functions.. 
+					// cooked functions in .one( 'build-done.piano', ... ) .. 
 					
 					( function play() { 
 						if ( ! demoing ) { return; } 
@@ -370,7 +370,7 @@
 			&& ( evt .type == 'keydown' ? recordStart() : recordStop() ) 
 			) ); 
 		
-		// functions.. 
+		// functions in q => {} // Looper .. 
 		
 		function recordStart() { 
 			if ( ! recording ) { 
@@ -506,7 +506,7 @@
 			// each step covers iPerStep = len / steps data points 
 			//     at an increment of yIncrement = yPerStep / iPerStep 
 			
-			// cooked functions.. 
+			// cooked functions in .on( 'played-note.piano', ... ) .. 
 			
 			( function draw() { 
 				
@@ -589,7 +589,7 @@
 		$( '.toggle-animate' ) .click( toggleAnimate ); 
 		$button .click( toggleAnimate ); 
 		
-		// functions.. 
+		// functions in q => {} // Silly Colors .. 
 		
 		function choice( x ) { return x[ Math .floor( Math .random() * x .length ) ]; } 
 		
@@ -711,7 +711,7 @@
 				.appendTo( $keys )
 				; 
 			
-			// functions.. 
+			// functions in addKey() .. 
 			
 			function play( evt ) { 
 				// sound 
