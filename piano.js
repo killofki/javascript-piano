@@ -130,7 +130,7 @@
 				} // -- switch() 
 			} // -- ( ! downKeys[ keyCode ] && ... ) 
 		} ) // -- .keydown() 
-	.keyup( evt => { delete downKeys[ evt. keyCode ]; } ) 
+	.keyup( evt => { delete downKeys[ evt .keyCode ]; } ) 
 		; 
 	
 	
@@ -355,7 +355,7 @@
 		$looper .mousedown( recordStart ) .mouseup( recordStop ); 
 		
 		$( window ) .on( 'keydown keyup', evt => { 
-			   evt.which == 57 
+			   evt .which == 57 
 			&& ! isModifierKey( evt ) 
 			&& ( evt .type == 'keydown' ? recordStart() : recordStop() )
 				; 
@@ -611,7 +611,7 @@
 				} 
 			bctx .closePath(); 
 			if ( shouldAnimate ) { 
-				bctx.stroke(); 
+				bctx .stroke(); 
 				} 
 			bctx .fill(); 
 			} // -- draw() 
@@ -734,7 +734,7 @@
 		return x .charAt( 0 ) .toUpperCase() + x .substring( 1 ); 
 		} 
 	
-	function isModifierKey( evt ) { return evt.metaKey || evt.shiftKey || evt.altKey; } 
+	function isModifierKey( evt ) { return evt .metaKey || evt .shiftKey || evt .altKey; } 
 	
 	function colorHandler( evt ) { 
 		if ( evt .type === 'click' || ( evt .keyCode == 67 && ! isModifierKey( evt ) ) ) { 
