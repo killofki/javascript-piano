@@ -130,7 +130,7 @@
 				} // -- switch() 
 			} // -- ( ! downKeys[ keyCode ] && ... ) 
 		} ) // -- .keydown() 
-	.keyup( evt => void( delete downKeys[evt.keyCode] ) ) 
+	.keyup( evt => void( delete downKeys[ evt. keyCode ] ) ) 
 		; 
 	
 	
@@ -213,18 +213,16 @@
 	( undefined => { 
 		var chopsticks = ( ( 
 				  main, main2 
+				, [ c, d, e, f, g, a, b, C, D, E ] = [ -12, -10, -8, -7, -5, -3, -1, 0, 2, 4 ] 
+				, [ r6, r12 ] = [ 6, 12 ] .map( v => [ v ] ) 
+				, [ c6, e6, g6 ] = [ c, e, g ] .map( v => r6 .concat( v ) ) 
 				, fg6 = [ 6, -7, -5 ] 
 				, eg6 = [ 6, -8, -5 ] 
 				, db6 = [ 6, -10, -1 ] 
 				, cC6 = [ 6, -12, 0 ] 
 				, ea6 = [ 6, -8, -3 ] 
-				, g6 = [ 6, -5 ] 
-				, e6 = [ 6, -8 ] 
-				, c6 = [ 6, -12 ] 
-				, r12 = [ 12 ] 
 				, CE6 = [ 6, 0, 4 ] 
 				, bD6 = [ 6, -1, 2 ] 
-				, r6 = [ 6 ] 
 				, aC6 = [ 6, -3, 0 ] 
 				, gb6 = [ 6, -5, -1 ] 
 				, fa6 = [ 6, -7, -3 ] 
