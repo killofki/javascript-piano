@@ -89,7 +89,7 @@
 						// c# d#    f# g# a#    c# d#    f# 
 						// c  d  e  f  g  a  b  c  d  e  f  g 
 						// e 
-					, [ ... '];\'' ] 
+					, [ ... '];\'' ] // special key code.. 
 					, [ ... [ 221, 186, 222 ] ] 
 					] 
 				] 
