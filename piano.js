@@ -114,7 +114,7 @@
 			var key = keyNotes[ keyCode ]; 
 			switch( true ) { 
 				case typeof key != 'undefined' : 
-					$keys .trigger( `note-${ key+notesShift+notesOffset }.play` ); 
+					$keys .trigger( `note-${ [ key, notesShift, notesOffset ] .reduce( ( a, b ) => a + b ) }.play` ); 
 					evt .preventDefault(); 
 					break; 
 				case evt .keyCode == 188 : 
