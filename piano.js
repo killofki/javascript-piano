@@ -32,7 +32,7 @@
 	// Setup synth controls 
 	// 
 	
-	$ .each( [ 'volume', 'style' ], ( i, setting ) => { 
+	[ 'volume', 'style' ] .forEach( setting => { 
 		var 
 			$opts = 
 				$( '<div>', { 'class' : 'opts', html : `<p><strong>${ camelToText( setting ) }:</strong></p>` } ) 
@@ -45,7 +45,7 @@
 				.append( $( 
 					  '<a>'
 					, { 
-						  text : camelToText(name) 
+						  text : camelToText( name ) 
 						, href : '#' 
 						, 'class' : fn === DataGenerator[ setting ] .default ? 'selected' : '' 
 						, click : function ( evt ) { 
@@ -63,7 +63,7 @@
 				} // -- ( name != 'default' ) 
 			} ) // -- $ .each( DataGenerator[ setting ], ... ) 
 			; 
-		} ) // -- $ .each( [ 'volume', 'style' ], ... ) 
+		} ) // -- [ 'volume', 'style' ] .forEach( ... ) 
 		; 
 	
 	
@@ -199,12 +199,10 @@
 	// 
 	// Scroll nav 
 	// 
-	$ .each( 
-		  [ [ '#info', '#below' ], [ '#top', '#content' ] ]
-		, ( i, x ) => 
-			$( x[ 0 ] ) 
-			.click( q => $( 'html,body' ) .animate( { scrollTop : $( x[ 1 ] ) .offset() .top }, 1000) ) 
-		) // -- $ .each() 
+	[ [ '#info', '#below' ], [ '#top', '#content' ] ] .forEach( ([ x0, x1 ]) => 
+			$( x0 ) 
+			.click( q => $( 'html,body' ) .animate( { scrollTop : $( x1 ) .offset() .top }, 1000 ) ) 
+		) // -- [] .forEach( ... ) 
 		; 
 	
 	// cooked functions.. 
@@ -383,7 +381,7 @@
 				
 				// stop old loop 
 				window .clearInterval( loopInterval ); 
-				$ .each( loopTimeouts, ( i, x ) => window .clearTimeout( x ) ); 
+				loopTimeouts .forEach( x => window .clearTimeout( x ) ); 
 				} 
 			} // -- recordStart() 
 		
@@ -402,15 +400,14 @@
 				} 
 			} // -- recordStop() 
 		
-		function playLoop(data, totalTime) { 
+		function playLoop( data, totalTime ) { 
 			loopInterval = 
 				window 
 				.setInterval( 
 					  q => { 
 						loopTimeouts = []; 
-						$ .each( 
-							  data
-							, ( i, x ) => loopTimeouts .push( window .setTimeout( q => 
+						data .forEach( x => 
+							loopTimeouts .push( window .setTimeout( q => 
 								$keys .trigger( `note-${ x .key }.play` ), x.time 
 								) ) 
 							); 
@@ -551,7 +548,7 @@
 		var 
 			  bW = 20 
 			, bH = 20 
-			, $loop = $('.loop') 
+			, $loop = $( '.loop' ) 
 			, $button = 
 				$( 
 					  '<canvas>' 
