@@ -215,13 +215,14 @@
 				  main, main2 
 				, [ c, d, e, f, g, a, b, C, D, E ] = [ -12, -10, -8, -7, -5, -3, -1, 0, 2, 4 ] 
 				, [ r6, r12 ] = [ 6, 12 ] .map( v => [ v ] ) 
+				
 				, call6 = ( [ ... list ], ... concats ) => list .map( v => r6 .concat( ... concats, v ) ) 
+				
 				, [ c6, e6, g6 ] = call6( [ c, e, g ] ) 
-				, [ fg6, eg6, gb6 ] = call6( [ f, e, b ], g ) 
-				, [ db6, bD6 ] = call6( [ d, D ], b ) 
-				, [ ea6, ce6 ] = call6( [ a, c ], e ) 
-				, [ eC6, cC6, CE6, aC6 ] = call6( [ e, c, E, a ], C ) 
-				, [ fa6, df6 ] = call6( [ a, d ], f ) 
+				
+				, [ [ fg6, eg6, gb6 ], [ db6, bD6 ], [ ea6, ce6 ], [ eC6, cC6, CE6, aC6 ], [ fa6, df6 ] ] = 
+					[ [ [ f, e, b ], g ], [ [ d, D ], b ], [ [ a, c ], e ], [ [ e, c, E, a ], C ], [ [ a, d ], f ] ] 
+					.map( ([ ... ar ]) => call6( ... ar ) ) 
 				) => 
 			[ 
 				  { 
