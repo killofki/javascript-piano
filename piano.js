@@ -408,7 +408,7 @@
 						loopTimeouts = []; 
 						data .forEach( x => 
 							loopTimeouts .push( window .setTimeout( q => 
-								$keys .trigger( `note-${ x .key }.play` ), x.time 
+								$keys .trigger( `note-${ x .key }.play` ), x .time 
 								) ) 
 							); 
 						} 
@@ -789,3 +789,6 @@
 	
 	} )() 
 	; 
+
+// original https://github.com/mrcoles/javascript-piano 
+// modify killofki 
