@@ -218,10 +218,7 @@
 				, alphaPo = [ {}, [ 'cdefgabCDE', [ -12, -10, -8, -7, -5, -3, -1, 0, 2, 4 ] ] ] 
 					.reduce( ( o, [ [ ... alphas ], Pos ] ) => ( alphas .forEach( ( c, p ) => o[ c ] = Pos[ p ] ), o ) ) 
 				, regAlpha = /(?<alpha>[^\d]+)(?<alphalen>\d+)/g 
-				, getHarmony = ( t 
-						, ev, alpha, alphalen 
-						, ov = [], na 
-						) => 
+				, getHarmony = t => 
 					t 
 					.match( regAlpha ) 
 					.map( ( et 
@@ -246,34 +243,35 @@
 					, 'volume' : 'linearFade' 
 					, 'notesOffset' : 0 
 					} 
-				, ... 
+				, ... [] .concat( ... 
 					[ 
-						  ... main = getHarmony( `
+						  main = `
 							  fg6, fg6, fg6, fg6, fg6, fg6 
 							, eg6, eg6, eg6, eg6, eg6, eg6 
 							, db6, db6, db6, db6, db6, db6 
 							, cC6, cC6, cC6 
-							` ) // -- main 
-						, ... getHarmony( ` cC6, db6, ea6 ` ) 
+							` // -- main 
+						, ` cC6, db6, ea6 `  
 						
-						, ... main 
-						, ... getHarmony( ` cC6, g6, e6, c6, r12 ` ) 
+						, main 
+						, ` cC6, g6, e6, c6, r12 ` 
 						
-						, ... main2 = getHarmony( ` 
+						, main2 = ` 
 							  CE6 
 							
 							, bD6, r6, aC6, gb6, r6, fa6 
 							, eg6, r6, CE6, CE6, r6, eg6 
 							
 							, df6, r6, bD6, bD6, r6 
-							` ) 
-						, ... getHarmony( ` df6, ce6, r6, eC6, eC6, r6 ` ) 
+							` 
+						, ` df6, ce6, r6, eC6, eC6, r6 ` 
 						
-						, ... main2 
-						, ... getHarmony( ` gb6, eC6, g6, e6, c6, r6 ` ) 
+						, main2 
+						, ` gb6, eC6, g6, e6, c6, r6 ` 
 						] 
-					.map( v => [ ... v ] ) // duplicate inner value 
-					// ... [ ... main, ... ] 
+					.map( t => getHarmony( t ) ) 
+					) // -- .concat() 
+					// -- [] .concat() 
 				] 
 			)() // -- chopsticks 
 			; 
