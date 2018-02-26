@@ -222,19 +222,20 @@
 				, getHarmony = t => 
 					t 
 					.match( regAlphas ) 
-					.map( ( et 
-							, i, a 
-							, alpha, alphalen 
-							) => ( 
-						  ( { alpha, alphalen } = et .match( regAlpha ) .groups ) 
-						, [ 
-							  alphalen | 0 
-							, ... 
-								[ ... alpha ] 
-								.filter( c => alphaPo .propertyIsEnumerable( c ) ) 
-								.map( c => alphaPo[ c ] ) 
+					.map( et => 
+						[ 
+							  et .match( regAlpha ) .groups 
+							, ( { alpha, alphalen } ) => 
+								[ 
+									  alphalen | 0 
+									, ... 
+										[ ... alpha ] 
+										.filter( c => alphaPo .propertyIsEnumerable( c ) ) 
+										.map( c => alphaPo[ c ] ) 
+									] 
 							] 
-						) ) // -- .map() 
+						.reduce( ( v, F ) => F( v ) )
+						) // -- .map() 
 					// -- getHarmony 
 				) => 
 			[ 
