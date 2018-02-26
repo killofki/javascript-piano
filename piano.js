@@ -219,7 +219,7 @@
 					.reduce( ( o, [ [ ... alphas ], Pos ] ) => ( alphas .forEach( ( c, p ) => o[ c ] = Pos[ p ] ), o ) ) 
 				, regAlphas = /[^\d]+\d+/g // splitor 
 				, regAlpha = /(?<alpha>[^\d]+)(?<alphalen>\d+)/ // catcher 
-				, alphaCatcher = ( { alpha, alphalen } ) => 
+				, alphaCatcher = ({ alpha, alphalen }) => 
 					[ 
 						  alphalen | 0 
 						, ... 
