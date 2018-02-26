@@ -219,22 +219,18 @@
 					.reduce( ( o, [ [ ... alphas ], Pos ] ) => ( alphas .forEach( ( c, p ) => o[ c ] = Pos[ p ] ), o ) ) 
 				, regAlphas = /[^\d]+\d+/g // splitor 
 				, regAlpha = /(?<alpha>[^\d]+)(?<alphalen>\d+)/ // catcher 
-				, getHarmony = t => 
-					t .match( regAlphas ) .map( et => 
-						[ 
-							  et .match( regAlpha ) .groups 
-							, ( { alpha, alphalen } ) => 
-								[ 
-									  alphalen | 0 
-									, ... 
-										[ ... alpha ] 
-										.filter( c => alphaPo .propertyIsEnumerable( c ) ) 
-										.map( c => alphaPo[ c ] ) 
-									] 
-							] 
-						.reduce( ( v, F ) => F( v ) )
-						) // -- t .match() .map() 
-					// -- getHarmony 
+				, alphaCatcher = ( { alpha, alphalen } ) => 
+					[ 
+						  alphalen | 0 
+						, ... 
+							[ ... alpha ] 
+							.filter( c => alphaPo .propertyIsEnumerable( c ) ) 
+							.map( c => alphaPo[ c ] ) 
+						] 
+					// -- alphaCatcher 
+				, getHarmony = t => t .match( regAlphas ) .map( et => 
+					alphaCatcher( et .match( regAlpha ) .groups ) 
+					) 
 				) => 
 			[ 
 				  { 
