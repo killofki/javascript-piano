@@ -246,28 +246,28 @@
 				, ... [] .concat( ... 
 					[ 
 						  main = `
-							  fg6, fg6, fg6, fg6, fg6, fg6 
-							, eg6, eg6, eg6, eg6, eg6, eg6 
-							, db6, db6, db6, db6, db6, db6 
-							, cC6, cC6, cC6 
+							fg6 fg6 fg6 fg6 fg6 fg6 
+							eg6 eg6 eg6 eg6 eg6 eg6 
+							db6 db6 db6 db6 db6 db6 
+							cC6 cC6 cC6 
 							` // -- main 
-						, ` cC6, db6, ea6 `  
+						, ` cC6 db6 ea6 `  
 						
 						, main 
-						, ` cC6, g6, e6, c6, r12 ` 
+						, ` cC6 g6 e6 c6 r12 ` 
 						
 						, main2 = ` 
-							  CE6 
+							CE6 
 							
-							, bD6, r6, aC6, gb6, r6, fa6 
-							, eg6, r6, CE6, CE6, r6, eg6 
+							bD6 r6 aC6 gb6 r6 fa6 
+							eg6 r6 CE6 CE6 r6 eg6 
 							
-							, df6, r6, bD6, bD6, r6 
-							` 
-						, ` df6, ce6, r6, eC6, eC6, r6 ` 
+							df6 r6 bD6 bD6 r6 
+							` // -- main2 
+						, ` df6 ce6 r6 eC6 eC6 r6 ` 
 						
 						, main2 
-						, ` gb6, eC6, g6, e6, c6, r6 ` 
+						, ` gb6 eC6 g6 e6 c6 r6 ` 
 						] 
 					.map( t => getHarmony( t ) ) 
 					) // -- .concat() 
