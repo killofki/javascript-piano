@@ -217,16 +217,16 @@
 				
 				, alphaPo = [ {}, [ 'cdefgabCDE', [ -12, -10, -8, -7, -5, -3, -1, 0, 2, 4 ] ] ] 
 					.reduce( ( o, [ [ ... alphas ], Pos ] ) => ( alphas .forEach( ( c, p ) => o[ c ] = Pos[ p ] ), o ) ) 
-				, regAlpha = /(?<alpha>[^\d]+)(?<alphalen>\d+)/g 
+				, regAlphas = /[^\d]+\d+/g // splitor 
+				, regAlpha = /(?<alpha>[^\d]+)(?<alphalen>\d+)/ // catcher 
 				, getHarmony = t => 
 					t 
-					.match( regAlpha ) 
+					.match( regAlphas ) 
 					.map( ( et 
 							, i, a 
 							, alpha, alphalen 
 							) => ( 
-						  regAlpha .lastIndex = -1 // refresh 
-						, ( { alpha, alphalen } = regAlpha .exec( et ) .groups ) 
+						  ( { alpha, alphalen } = et .match( regAlpha ) .groups ) 
 						, [ 
 							  alphalen | 0 
 							, ... 
