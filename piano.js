@@ -220,9 +220,7 @@
 				, regAlphas = /[^\d]+\d+/g // splitor 
 				, regAlpha = /(?<alpha>[^\d]+)(?<alphalen>\d+)/ // catcher 
 				, getHarmony = t => 
-					t 
-					.match( regAlphas ) 
-					.map( et => 
+					t .match( regAlphas ) .map( et => 
 						[ 
 							  et .match( regAlpha ) .groups 
 							, ( { alpha, alphalen } ) => 
@@ -235,7 +233,7 @@
 									] 
 							] 
 						.reduce( ( v, F ) => F( v ) )
-						) // -- .map() 
+						) // -- t .match() .map() 
 					// -- getHarmony 
 				) => 
 			[ 
