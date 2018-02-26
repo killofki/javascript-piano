@@ -95,7 +95,8 @@
 				] 
 			.reduce( ( o, [ ta, pa, spc, spv ] ) => ( 
 				  ta .forEach( ( c, p ) => 
-					[ spv[ spc .indexOf( c ) ] || c .toUpperCase() .charCodeAt() ] 
+					   c !== ' ' // skip about blank zone 
+					&& [ spv[ spc .indexOf( c ) ] || c .toUpperCase() .charCodeAt() ] 
 					.forEach( cv => o[ cv ] = pa[ p ] ) 
 					) 
 				, o 
