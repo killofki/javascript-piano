@@ -25,10 +25,13 @@
 			var data = []; 
 			var maxI = cfg .sampleRate * cfg .seconds; 
 			forIn( [ 0, maxI ], i => forIn( [ 0, cfg .channels ], j => 
-				[ cfg ] .forEach( ( { freq, volume, sampleRate, seconds }, k, cfga 
+				[ cfg ] 
+				.forEach( ( { freq, volume, sampleRate, seconds }, k, cfga 
 						, fars = [ freq, volume, i, sampleRate, seconds, maxI ] 
 						) => 
-					data .push( asBytes( volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 ) ) 
+					data .push( asBytes( 
+						volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 
+						) ) 
 					) 
 				) ); 
 			return data; 
