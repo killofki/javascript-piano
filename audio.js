@@ -18,7 +18,7 @@
 					, sampleRate : 11025 // Hz 
 					, seconds : .5 
 					, channels : 1 
-					}
+					} 
 				, cfg 
 				); 
 			
@@ -84,7 +84,7 @@
 	var 
 		Notes = { 
 			  sounds : {} 
-			, getDataURI : ( n, cfg = {} ) => (
+			, getDataURI : ( n, cfg = {} ) => ( 
 				  ( cfg .freq = noteToFreq( n ) ) 
 				, toDataURI( cfg ) 
 				) 
@@ -134,7 +134,7 @@
 				, volume : 20000 //32767 
 				, freq : 440 
 				} 
-			, cfg
+			, cfg 
 			); 
 		
 		
@@ -250,4 +250,6 @@
 		} 
 	
 	} 
-)();
+)()
+	; 
+
