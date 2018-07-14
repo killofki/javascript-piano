@@ -240,11 +240,7 @@
 			); 
 		} 
 	
-	function forIn( [ i = 0, n ], F = q => q ){ 
-		for ( ; i < n; i += 1 ) { 
-			F( i ); 
-			} 
-		} 
+	function forIn( [ i = 0, n ], F = q => q ){ for ( ; i < n; i += 1 ) { F( i ); } } 
 	
 	function mapIn( [ i, n ], F = q => q 
 			, oa = [] 
