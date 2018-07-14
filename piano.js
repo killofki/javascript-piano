@@ -728,7 +728,7 @@
 				
 				// visual feedback 
 				window .clearTimeout( pressedTimeout ); 
-				pressedTimeout = window .setTimeout( q => $k .removeClass( 'pressed' ), 200); 
+				pressedTimeout = window .setTimeout( q => $k .removeClass( 'pressed' ), 200 ); 
 				} // -- play() 
 			
 			} // -- addKey() 
@@ -747,7 +747,7 @@
 			if ( ++ curColor >= colors .length ) { 
 				curColor = 0; 
 				} 
-			document .getElementById( 'piano' ) .style .backgroundColor = '#' + colors[ curColor ]; 
+			document .getElementById( 'piano' ) .style .backgroundColor = `#${ colors[ curColor ] }`; 
 			} 
 		} // -- colorHandler() 
 	
