@@ -161,6 +161,7 @@
 							] 
 					] 
 				.reduce( ( o, F ) => F( o ) ) 
+				.join( '' ) 
 		
 		// 
 		// Data Sub-Chunk 
@@ -173,8 +174,9 @@
 				[ 
 					  'data' // sub-chunk identifier 
 					, asBytes( samples * cfg .channels * cfg .bitDepth / 8, 4 ) // chunk length 
-					, sampleData .join( '' ) 
+					, ... sampleData 
 					] 
+				.join( '' ) 
 		
 		// 
 		// Header + Sub-Chunks 
@@ -184,8 +186,8 @@
 					  'RIFF' 
 					, asBytes( 4 + ( 8 + fmtChunk .length ) + ( 8 + dataChunk .length ), 4 ) 
 					, 'WAVE' 
-					, ... fmtChunk 
-					, ... dataChunk 
+					, fmtChunk 
+					, dataChunk 
 					] 
 				.join( '' ) 
 			; 
