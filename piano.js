@@ -131,7 +131,7 @@
 				} // -- switch() 
 			} // -- ( ! downKeys[ keyCode ] && ... ) 
 		} ) // -- .keydown() 
-	.keyup( evt => { delete downKeys[ evt .keyCode ]; } ) 
+	.keyup( ({ keyCode }) => { delete downKeys[ keyCode ]; } ) 
 		; 
 	
 	
@@ -154,13 +154,13 @@
 	var $help = $( '.help' ); 
 	
 	$( window ) 
-	.click( evt => { 
-		var $closestHelp = $( evt .target ) .closest( '.help' ); 
-		if ( 
-				   ! ( ( evt .target .nodeName == 'A' || ~ evt .target .className .search( 'hold' ) ) && $closestHelp .length ) 
-				&& ( $closestHelp .length || $help .hasClass( 'show' ) ) ) { 
-			$help .toggleClass( 'show' ); 
-			} 
+	.click( ({ target }) => { 
+		var $closestHelp = $( target ) .closest( '.help' ); 
+		
+			! ( ( target .nodeName == 'A' || ~ target .className .search( 'hold' ) ) && $closestHelp .length ) 
+		&& ( $closestHelp .length || $help .hasClass( 'show' ) ) 
+		&& $help .toggleClass( 'show' ) 
+			; 
 		} ) // -- .click() 
 		; 
 	
