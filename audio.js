@@ -25,12 +25,10 @@
 			var data = []; 
 			let { freq, volume, sampleRate, seconds, channels } = cfg; 
 			var maxI = sampleRate * seconds; 
-			forIn( [ 0, maxI ], i => forIn( [ 0, channels ], ( j 
+			return flatIn( [ 0, maxI ], i => mapIn( [ 0, channels ], ( j 
 					, fars = [ freq, volume, i, sampleRate, seconds, maxI ] 
 					) => 
-				data .push( asBytes( 
-					volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 
-					) ) 
+				asBytes( volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 ) 
 				) ); 
 			return data; 
 			} // -- ( styleFn, volumeFn, cfg ) => {} // default value over $ 
@@ -247,6 +245,8 @@
 		forIn( [ i, n ], i => oa .push( F( i ) ) ); 
 		return oa; 
 		} 
+	
+	function flatIn( [ i, n ], F ) { return [] .concat( ... mapIn( [ i, n ], F ) ); } 
 	
 	function joinIn( [ i, n ], F, c = '' ) { return mapIn( [ i, n ], F ) .join( c ); } 
 	
