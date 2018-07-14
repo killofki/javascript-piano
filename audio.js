@@ -82,11 +82,9 @@
 		); // -- DataGenerator = $ .extend() 
 	
 	[ [ 'style', 'wave' ], [ 'volume', 'linearFade' ] ] 
-	.forEach( ( [ p, q ], i, a 
-			, ele = DataGenerator[ p ] 
-			) => 
+	.forEach( ([ p, q ]) => [ DataGenerator[ p ] ] .forEach( ele => 
 		ele .default = ele[ q ] 
-		) 
+		) ) 
 		; 
 	
 	var 
