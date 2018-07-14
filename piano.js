@@ -201,10 +201,10 @@
 	// 
 	// Scroll nav 
 	// 
-	[ [ '#info', '#below' ], [ '#top', '#content' ] ] .forEach( ([ x0, x1 ]) => 
-			$( x0 ) 
-			.click( q => $( 'html,body' ) .animate( { scrollTop : $( x1 ) .offset() .top }, 1000 ) ) 
-		) // -- [] .forEach( ... ) 
+	[ [ '#info', '#below' ], [ '#top', '#content' ] ] 
+	.forEach( ([ x0, x1 ]) => $( x0 ) .click( q => 
+		$( 'html,body' ) .animate( { scrollTop : $( x1 ) .offset() .top }, 1000 ) 
+		) ) // -- [] .forEach( .click( ... ) ) 
 		; 
 	
 	// cooked functions.. 
