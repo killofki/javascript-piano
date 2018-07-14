@@ -42,22 +42,19 @@
 		$ .each( DataGenerator[ setting ], ( name, fn ) => { 
 			name != 'default' 
 			&& $( '<p>' ) 
-				.append( $( 
-					  '<a>'
-					, { 
-						  text : camelToText( name ) 
-						, href : '#' 
-						, 'class' : fn === DataGenerator[ setting ] .default ? 'selected' : '' 
-						, click : function ( evt ) { 
-							evt .preventDefault(); 
-							DataGenerator[ setting ] .default = fn; 
-							buildPiano(); 
-							var $this = $( this ); 
-							$this .closest( '.opts' ) .find( '.selected' ) .removeClass( 'selected' ); 
-							$this .addClass( 'selected' ); 
-							} 
+				.append( $( '<a>', { 
+					  text : camelToText( name ) 
+					, href : '#' 
+					, 'class' : fn === DataGenerator[ setting ] .default ? 'selected' : '' 
+					, click : function ( evt ) { 
+						evt .preventDefault(); 
+						DataGenerator[ setting ] .default = fn; 
+						buildPiano(); 
+						var $this = $( this ); 
+						$this .closest( '.opts' ) .find( '.selected' ) .removeClass( 'selected' ); 
+						$this .addClass( 'selected' ); 
 						} 
-					) ) // -- .append( '<a>', ... ) 
+					} ) ) // -- .append( '<a>', {} ) 
 				.appendTo( $opts ) 
 				; // -- ( name != 'default' ) 
 			} ) // -- $ .each( DataGenerator[ setting ], ... ) 
