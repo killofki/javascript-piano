@@ -239,8 +239,8 @@
 			); 
 		} 
 	
-	function forIn( [ i, n ], F = q => q ){ 
-		for ( i = 0; i < n; i += 1 ) { 
+	function forIn( [ i = 0, n ], F = q => q ){ 
+		for ( i; i < n; i += 1 ) { 
 			F( i ); 
 			} 
 		} 
