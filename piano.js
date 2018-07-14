@@ -575,7 +575,7 @@
 				, [ 15, 11 ] 
 				, [ 11, 9 ] 
 				] 
-			, coordsLen = coords .length 
+			, { length : coordsLen } = coords 
 			; 
 		
 		bctx .strokeStyle = 'rgba(0,0,0,.5)'; 
