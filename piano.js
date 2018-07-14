@@ -192,7 +192,6 @@
 			) } 
 		] 
 	.reduce( ( o, objF ) => ( 
-		console.log(objF),
 		  Object .keys( objF ) .forEach( p => o[ p ]( objF[ p ] ) ) // objF's function value to o's property argument 
 		, o // with flow 
 		) ) 
