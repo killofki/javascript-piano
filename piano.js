@@ -470,7 +470,9 @@
 			if ( ! shouldAnimate ) { return; } 
 			
 			var 
-				  [ eOffset, eWidth ] = [ 'offset', 'width' ] .map( p => $elt[ p ]() ) 
+				  [ eOffset, eWidth ] = [ $elt, [ 'offset', 'width' ] ] .reduce( ( o, a ) => a .map( p => 
+					o[ p ]() 
+					) ) 
 				, cOffset = $canvas .offset() 
 				, startX = ( eOffset .left + eWidth / 2 ) - cOffset .left 
 				, startY = 0 
