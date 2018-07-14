@@ -90,10 +90,7 @@
 	var 
 		Notes = { 
 			  sounds : {} 
-			, getDataURI : ( n, cfg = {} ) => ( 
-				  ( cfg .freq = noteToFreq( n ) ) 
-				, toDataURI( cfg ) 
-				) 
+			, getDataURI : ( n, cfg = {} ) => toDataURI({ ... cfg, freq : noteToFreq( n ) }) 
 			, getCachedSound : function( n, data ) { 
 				var key = n, cfg; 
 				if ( data && typeof data == "object" ) { 
