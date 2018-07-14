@@ -219,7 +219,7 @@
 					.reduce( ( o, [ [ ... alphas ], Pos ] ) => ( alphas .forEach( ( c, p ) => o[ c ] = Pos[ p ] ), o ) ) 
 				, regAlphas = /[^\d]+\d+/g // splitor 
 				, regAlpha = /(?<alpha>[^\d]+)(?<alphalen>\d+)/ // catcher 
-				, alphaCatcher = ({ alpha, alphalen }) => 
+				, alphaCatcher = ( { alpha, alphalen }, alphaPo ) => 
 					[ 
 						  alphalen | 0 
 						, ... 
@@ -229,7 +229,7 @@
 						] 
 					// -- alphaCatcher 
 				, getHarmony = t => t .match( regAlphas ) .map( et => 
-					alphaCatcher( et .match( regAlpha ) .groups ) 
+					alphaCatcher( et .match( regAlpha ) .groups, alphaPo ) 
 					) 
 				) => 
 			[ 
