@@ -151,50 +151,54 @@
 	// Help controls 
 	// 
 	
-	var $help = $( '.help' ); 
-	
-	$( window ) 
-	.click( ({ target }) => { 
-		var $closestHelp = $( target ) .closest( '.help' ); 
-		
-			! ( ( target .nodeName == 'A' || ~ target .className .search( 'hold' ) ) && $closestHelp .length ) 
-		&& ( $closestHelp .length || $help .hasClass( 'show' ) ) 
-		&& $help .toggleClass( 'show' ) 
-			; 
-		} ) // -- .click() 
-		; 
-	
-	var qTimeout, qCanToggle = true; 
-	$( window ) 
-	.keypress( ({ which }) => { 
-		// trigger help when ? is pressed, but make sure it doesn't repeat crazy 
-		if ( which == 63 || which == 48 ) { 
-			window .clearTimeout( qTimeout ); 
-			qTimeout = window .setTimeout( q => qCanToggle = true, 1000 ); 
-			if ( qCanToggle ) { 
-				qCanToggle = false; 
-				$help .toggleClass( 'show' ); 
-				} 
-			} 
-		} ) // -- .keypress() 
+	var 
+		  $help = $( '.help' ) 
+		, qTimeout 
+		, qCanToggle = true 
 		; 
 	
 	window .setTimeout( q => $help .removeClass( 'show' ), 700 ); 
 	
-	// prevent quick find... 
-	$( window ) 
-	.keydown( evt => { 
-		if ( 
-				   evt .target .nodeName != 'INPUT' 
-				&& evt .target .nodeName != 'TEXTAREA' 
-				) { 
-			if ( evt .keyCode == 222 ) { 
-				evt .preventDefault(); 
-				return false; 
+	[ 
+		  $( window ) 
+		, { click : ({ target }) => { 
+			var $closestHelp = $( target ) .closest( '.help' ); 
+			
+				! ( ( target .nodeName == 'A' || ~ target .className .search( 'hold' ) ) && $closestHelp .length ) 
+			&& ( $closestHelp .length || $help .hasClass( 'show' ) ) 
+			&& $help .toggleClass( 'show' ) 
+				; 
+			} } 
+		, { keypress : ({ which }) => { 
+			// trigger help when ? is pressed, but make sure it doesn't repeat crazy 
+			if ( which == 63 || which == 48 ) { 
+				window .clearTimeout( qTimeout ); 
+				qTimeout = window .setTimeout( q => qCanToggle = true, 1000 ); 
+				if ( qCanToggle ) { 
+					qCanToggle = false; 
+					$help .toggleClass( 'show' ); 
+					} 
 				} 
-			} 
-		return true; 
-		} ) // -- .keydown() 
+			} } 
+		, { keydown : evt => { 
+			// prevent quick find... 
+			if ( 
+						evt .target .nodeName != 'INPUT' 
+					&& evt .target .nodeName != 'TEXTAREA' 
+					) { 
+				if ( evt .keyCode == 222 ) { 
+					evt .preventDefault(); 
+					return false; 
+					} 
+				} 
+			return true; 
+			} } 
+		] 
+	.reduce( ( o, objF ) => ( 
+		console.log(objF),
+		  Object .keys( objF ) .forEach( p => o[ p ]( objF[ p ] ) ) // objF's function value to o's property argument 
+		, o // with flow 
+		) ) 
 		; 
 	
 	// 
