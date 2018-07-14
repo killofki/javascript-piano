@@ -674,13 +674,12 @@
 		
 		( function go() { // calling by setTimeout self 
 			addKey( i + notesOffset ); 
-			if ( ++i < max ) { 
-				window .setTimeout( go, addDelay ); 
-				} 
-			else { 
-				buildingPiano = false; 
-				$keys .trigger( 'build-done.piano' ); 
-				} 
+			( ++i < max ) ? window .setTimeout( go, addDelay ) 
+			: ( 
+				  buildingPiano = false 
+				, $keys .trigger( 'build-done.piano' ) 
+				) 
+				; 
 			} )(); // -- go() 
 		
 		// functions in buildPiano() .. 
