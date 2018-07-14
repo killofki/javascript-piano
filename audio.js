@@ -98,7 +98,7 @@
 				var key = n, cfg; 
 				if ( data && typeof data == "object" ) { 
 					cfg = data; // setter's caller 
-					key += `-${ 
+					key = `${ n }-${ 
 						[] .concat( ... 
 							Object .keys( data ) 
 							.map( attr => [ attr, data[ attr ] ] ) 
