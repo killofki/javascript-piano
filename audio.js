@@ -240,7 +240,7 @@
 		} 
 	
 	function forIn( [ i = 0, n ], F = q => q ){ 
-		for ( i; i < n; i += 1 ) { 
+		for ( ; i < n; i += 1 ) { 
 			F( i ); 
 			} 
 		} 
