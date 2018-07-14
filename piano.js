@@ -473,8 +473,7 @@
 			if ( ! shouldAnimate ) { return; } 
 			
 			var 
-				  eOffset = $elt .offset() 
-				, eWidth = $elt .width() 
+				  [ eOffset, eWidth ] = [ 'offset', 'width' ] .map( p => $elt[ p ]() ) 
 				, cOffset = $canvas .offset() 
 				, startX = ( eOffset .left + eWidth / 2 ) - cOffset .left 
 				, startY = 0 
