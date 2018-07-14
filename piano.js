@@ -595,8 +595,9 @@
 				  data = [] 
 				, freq = Notes .noteToFreq( note ) 
 				, vol = 1, sampleRate = 2024, secs = .1 
-				, volumeFn = DataGenerator .volume .default 
-				, styleFn = DataGenerator .style .default 
+				, [ volumeFn, styleFn ] = [ DataGenerator, [ 'volume', 'style' ] ] .reduce( ( o, a ) => a .map( p => 
+					o[ p ] .default 
+					) ) 
 				, maxI = sampleRate * secs 
 				; 
 			for ( var i = 0; i < maxI; i++ ) { 
