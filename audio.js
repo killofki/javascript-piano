@@ -168,12 +168,11 @@
 		// 
 			, { styleFn, volumeFn } = cfg 
 			, sampleData = DataGenerator( styleFn, volumeFn, cfg ) 
-			, samples = sampleData .length 
 			
 			, dataChunk = 
 				[ 
 					  'data' // sub-chunk identifier 
-					, asBytes( samples * cfg .channels * cfg .bitDepth / 8, 4 ) // chunk length 
+					, asBytes( sampleData .length * cfg .channels * cfg .bitDepth / 8, 4 ) // chunk length 
 					, ... sampleData 
 					] 
 				.join( '' ) 
