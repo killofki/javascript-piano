@@ -674,7 +674,7 @@
 		
 		( function go() { // calling by setTimeout self 
 			addKey( i + notesOffset ); 
-			( ++i < max ) ? window .setTimeout( go, addDelay ) 
+			  ( ++i < max ) ? window .setTimeout( go, addDelay ) 
 			: ( 
 				  buildingPiano = false 
 				, $keys .trigger( 'build-done.piano' ) 
