@@ -283,12 +283,15 @@
 			if ( ! buildingPiano && ! demoing ) { 
 				demoing = true; 
 				
-				[ 'style', 'volume' ] .forEach( p => [ cfg[ p ] ] .forEach( cp => 
-					cp && ( DataGenerator[ p ] .default = DataGenerator[ p ][ cp ] ) ) 
-					); 
+				[ 'style', 'volume' ] 
+				.forEach( p => [ cfg[ p ] ] .forEach( cp => 
+					cp && ( DataGenerator[ p ] .default = DataGenerator[ p ][ cp ] ) 
+					) ) 
+					; 
 				[ cfg .notesOffset ] .forEach( cn => 
 					cn !== undefined && ( notesOffset = cn ) 
-					); 
+					) 
+					; 
 				
 				$keys 
 				.one( 'build-done.piano', q => { 
@@ -431,20 +434,16 @@
 			, $piano = $( '#piano' ) 
 			, W = $piano .width() 
 			, H = 500 
-			, $canvas = 
-				$(
-					  '<canvas>' 
-					, { 
-						css : { 
-							  position : 'absolute' 
-							, top : `${ $piano .offset() .top + $piano .outerHeight() - 1 }px` 
-							, left : '50%' 
-							, marginLeft : `${ Math .floor( -W / 2 ) }px` // need to figure this out... 
-							, width : W 
-							, height: H 
-							} 
+			, $canvas = $( '<canvas>', { 
+					css : { 
+						  position : 'absolute' 
+						, top : `${ $piano .offset() .top + $piano .outerHeight() - 1 }px` 
+						, left : '50%' 
+						, marginLeft : `${ Math .floor( -W / 2 ) }px` // need to figure this out... 
+						, width : W 
+						, height: H 
 						} 
-					) // -- $( '<canvas>', ... ) 
+					} ) // -- $( '<canvas>', ... ) 
 				.attr( 'width', W ) 
 				.attr( 'height', H ) 
 				.prependTo( 'body' ) 
