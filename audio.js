@@ -22,7 +22,6 @@
 				, cfg 
 				); 
 			
-			var data = []; 
 			let { freq, volume, sampleRate, seconds, channels } = cfg; 
 			var maxI = sampleRate * seconds; 
 			return flatIn( [ 0, maxI ], i => mapIn( [ 0, channels ], ( j 
@@ -30,7 +29,6 @@
 					) => 
 				asBytes( volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 ) 
 				) ); 
-			return data; 
 			} // -- ( styleFn, volumeFn, cfg ) => {} // default value over $ 
 		, { 
 			  style : { 
