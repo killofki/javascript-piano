@@ -239,13 +239,13 @@
 			); 
 		} 
 	
-	function forIn( [ i, n ], F ){ 
+	function forIn( [ i, n ], F = q => q ){ 
 		for ( i = 0; i < n; i += 1 ) { 
 			F( i ); 
 			} 
 		} 
 	
-	function mapIn( [ i, n ], F 
+	function mapIn( [ i, n ], F = q => q 
 			, oa = [] 
 			) { 
 		forIn( [ i, n ], i => oa .push( F( i ) ) ); 
