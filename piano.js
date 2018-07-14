@@ -434,7 +434,8 @@
 			, $piano = $( '#piano' ) 
 			, W = $piano .width() 
 			, H = 500 
-			, $canvas = $( '<canvas>', { 
+			, $canvas = 
+				$( '<canvas>', { 
 					css : { 
 						  position : 'absolute' 
 						, top : `${ $piano .offset() .top + $piano .outerHeight() - 1 }px` 
@@ -461,7 +462,8 @@
 			.each( function() { 
 				[ $( this ) .data( 'key' ) ] .forEach( key =>  
 					keyToData[ key ] = getData( key ) 
-					); 
+					) 
+					; 
 				} ) 
 			) // -- .on( 'build-done.piano', ... ) 
 			; 
