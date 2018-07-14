@@ -233,13 +233,10 @@
 		// Example: 
 		// asBytes(2835, 4) 
 		// > '\x13\x0b\x00\x00' 
-		return ( 
-			mapIn( [ 0, bytes ], ( i 
-					, rv = String .fromCharCode( value & 255 ) 
-					) => 
-				( ( value >>= 8 ), rv ) 
-				) 
-			.join( '' ) 
+		return joinIn( [ 0, bytes ], ( i 
+				, rv = String .fromCharCode( value & 255 ) 
+				) => 
+			( ( value >>= 8 ), rv ) 
 			); 
 		} 
 	
@@ -255,6 +252,8 @@
 		forIn( [ i, n ], i => oa .push( F( i ) ) ); 
 		return oa; 
 		} 
+	
+	function joinIn( [ i, n ], F, c = '' ) { return mapIn( [ i, n ], F ) .join( c ); } 
 	
 	} 
 )()
