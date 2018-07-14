@@ -9,7 +9,7 @@
 		  ( 
 				  styleFn = DataGenerator .style .default 
 				, volumeFn = DataGenerator .volume .default 
-				, cfg 
+				, cfg = {} 
 				) => { 
 			cfg = $ .extend( 
 				  { 
@@ -19,20 +19,18 @@
 					, seconds : .5 
 					, channels : 1 
 					} 
-				, {} 
+				, cfg 
 				); 
 			
 			var data = []; 
-			var maxI = cfg .sampleRate * cfg .seconds; 
-			forIn( [ 0, maxI ], i => forIn( [ 0, cfg .channels ], j => 
-				[ cfg ] 
-				.forEach( ( { freq, volume, sampleRate, seconds }, k, cfga 
-						, fars = [ freq, volume, i, sampleRate, seconds, maxI ] 
-						) => 
-					data .push( asBytes( 
-						volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 
-						) ) 
-					) 
+			let { freq, volume, sampleRate, seconds, channels } = cfg; 
+			var maxI = sampleRate * seconds; 
+			forIn( [ 0, maxI ], i => forIn( [ 0, channels ], ( j 
+					, fars = [ freq, volume, i, sampleRate, seconds, maxI ] 
+					) => 
+				data .push( asBytes( 
+					volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 
+					) ) 
 				) ); 
 			return data; 
 			} // -- ( styleFn, volumeFn, cfg ) => {} // default value over $ 
