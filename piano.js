@@ -166,9 +166,9 @@
 	
 	var qTimeout, qCanToggle = true; 
 	$( window ) 
-	.keypress( evt => { 
+	.keypress( ({ which }) => { 
 		// trigger help when ? is pressed, but make sure it doesn't repeat crazy 
-		if ( evt .which == 63 || evt .which == 48 ) { 
+		if ( which == 63 || which == 48 ) { 
 			window .clearTimeout( qTimeout ); 
 			qTimeout = window .setTimeout( q => qCanToggle = true, 1000 ); 
 			if ( qCanToggle ) { 
