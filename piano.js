@@ -405,19 +405,17 @@
 			} // -- recordStop() 
 		
 		function playLoop( data, totalTime ) { 
-			loopInterval = 
-				window 
-				.setInterval( 
-					  q => { 
-						loopTimeouts = []; 
-						data .forEach( x => 
-							loopTimeouts .push( window .setTimeout( q => 
-								$keys .trigger( `note-${ x .key }.play` ), x .time 
-								) ) 
-							); 
-						} 
-					, totalTime
-					) 
+			loopInterval = window .setInterval( 
+				  q => { 
+					loopTimeouts = []; 
+					data .forEach( x => 
+						loopTimeouts .push( window .setTimeout( q => 
+							$keys .trigger( `note-${ x .key }.play` ), x .time 
+							) ) 
+						); 
+					} 
+				, totalTime
+				) 
 				; 
 			} // -- playLoop() 
 		
