@@ -180,19 +180,16 @@
 					} 
 				} 
 			} } 
-		, { keydown : evt => { 
+		, { keydown : evt => ( 
 			// prevent quick find... 
-			if ( 
-						evt .target .nodeName != 'INPUT' 
-					&& evt .target .nodeName != 'TEXTAREA' 
-					) { 
-				if ( evt .keyCode == 222 ) { 
-					evt .preventDefault(); 
-					return false; 
-					} 
-				} 
-			return true; 
-			} } 
+				evt .target .nodeName != 'INPUT' 
+			&& evt .target .nodeName != 'TEXTAREA' 
+			&& evt .keyCode == 222 ? ( 
+				  evt .preventDefault() 
+				, false 
+				) 
+			: true 
+			) } 
 		] 
 	.reduce( ( o, objF ) => ( 
 		console.log(objF),
