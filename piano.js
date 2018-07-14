@@ -104,20 +104,24 @@
 	
 	$( window ) 
 	.keydown( evt => { 
-		var keyCode = evt .keyCode; 
+		var { keyCode } = evt; 
 		// prevent repeating keys 
 		if ( ! downKeys[ keyCode ] && ! isModifierKey( evt ) ) { 
 			downKeys[ keyCode ] = 1; 
 			var key = keyNotes[ keyCode ]; 
 			switch( true ) { 
 				case typeof key != 'undefined' : 
-					$keys .trigger( `note-${ [ key, notesShift, notesOffset ] .reduce( ( a, b ) => a + b ) }.play` ); 
+					$keys 
+					.trigger( `note-${ 
+						[ key, notesShift, notesOffset ] .reduce( ( a, b ) => a + b ) 
+						}.play` ) 
+						; 
 					evt .preventDefault(); 
 					break; 
-				case evt .keyCode == 188 : 
+				case keyCode == 188 : 
 					notesShift = -12; 
 					break; 
-				case evt .keyCode == 190 : 
+				case keyCode == 190 : 
 					notesShift = 0; 
 					break; 
 				case keyCode == 37 || keyCode == 39 : 
