@@ -601,11 +601,9 @@
 				, maxI = sampleRate * secs 
 				; 
 			for ( var i = 0; i < maxI; i++ ) { 
-				var sf = styleFn( freq, vol, i, sampleRate, secs, maxI ); 
-				data .push( volumeFn( 
-					  styleFn( freq, vol, i, sampleRate, secs, maxI )
-					, freq, vol, i, sampleRate, secs, maxI 
-					) ); 
+				let protoBlock = [ freq, vol, i, sampleRate, secs, maxI ]; 
+				var sf = styleFn( ... protoBlock ); 
+				data .push( volumeFn( styleFn( ... protoBlock ), ... protoBlock ) ); 
 				} // -- for( var i ... ) 
 			return data; 
 			} // -- getData() 
