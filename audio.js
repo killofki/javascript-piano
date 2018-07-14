@@ -164,7 +164,6 @@
 							.map( F ) 
 						] 
 					) 
-				.join( '' ) 
 		
 		// 
 		// Data Sub-Chunk 
@@ -178,7 +177,6 @@
 					, asBytes( samples * cfg .channels * cfg .bitDepth / 8, 4 ) // chunk length 
 					, sampleData .join( '' ) 
 					] 
-				.join( '' ) 
 		
 		// 
 		// Header + Sub-Chunks 
@@ -188,8 +186,8 @@
 					  'RIFF' 
 					, asBytes( 4 + ( 8 + fmtChunk .length ) + ( 8 + dataChunk .length ), 4 ) 
 					, 'WAVE' 
-					, fmtChunk 
-					, dataChunk 
+					, ... fmtChunk 
+					, ... dataChunk 
 					] 
 				.join( '' ) 
 			; 
@@ -221,9 +219,7 @@
 			} 
 		} 
 	
-	function attack( i ) { 
-		return i < 200 ? ( i / 200 ) : 1; 
-		} 
+	function attack( i ) { return i < 200 ? ( i / 200 ) : 1; } 
 	
 	function asBytes( value, bytes ) { 
 		// Convert value into little endian hex bytes 
