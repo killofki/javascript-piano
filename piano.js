@@ -75,13 +75,13 @@
 		  keyNotes = 
 			[ 
 				  {} 
-				, [ 
-					[ 
+				, {  
+					  ta : [ 
 						  ... 'we tyu op ]' 
 						, ... 'asdfghjkl;\'\r' // ... enter 
 						, ... '\xba' // ... gotta figure out why it's sometimes 186 and sometimes 59 
 						] 
-					, [ 
+					, pa : [ 
 						  ... [ 1, 3, -1, 6, 8, 10, -1, 13, 15, -1, 18 ] 
 						, ... [ 0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19 ] 
 						, ... [ 16 ] 
@@ -89,11 +89,11 @@
 						// c# d#    f# g# a#    c# d#    f# 
 						// c  d  e  f  g  a  b  c  d  e  f  g 
 						// e 
-					, [ ... '];\'' ] // special key code.. 
-					, [ ... [ 221, 186, 222 ] ] 
-					] 
+					, spc : [ ... '];\'' ] // special key code.. 
+					, spv : [ ... [ 221, 186, 222 ] ] 
+					} 
 				] 
-			.reduce( ( o, [ ta, pa, spc, spv ] ) => ( 
+			.reduce( ( o, { ta, pa, spc, spv } ) => ( 
 				  ta .forEach( ( c, p ) => 
 					   c !== ' ' // skip about blank zone 
 					&& [ spv[ spc .indexOf( c ) ] || c .toUpperCase() .charCodeAt() ] 
