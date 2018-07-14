@@ -594,7 +594,8 @@
 			var 
 				  data = [] 
 				, freq = Notes .noteToFreq( note ) 
-				, vol = 1, sampleRate = 2024, secs = .1 
+				, vol = 1 
+				, sampleRate = 2024, secs = .1 
 				, [ volumeFn, styleFn ] = [ DataGenerator, [ 'volume', 'style' ] ] .reduce( ( o, a ) => a .map( p => 
 					o[ p ] .default 
 					) ) 
