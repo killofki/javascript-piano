@@ -409,8 +409,9 @@
 				  q => { 
 					loopTimeouts = []; 
 					data .forEach( x => 
-						loopTimeouts .push( window .setTimeout( q => 
-							$keys .trigger( `note-${ x .key }.play` ), x .time 
+						loopTimeouts .push( window .setTimeout( 
+							  q => $keys .trigger( `note-${ x .key }.play` )
+							, x .time 
 							) ) 
 						); 
 					} 
