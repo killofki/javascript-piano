@@ -9,7 +9,7 @@
 		  ( 
 				  styleFn = DataGenerator .style .default 
 				, volumeFn = DataGenerator .volume .default 
-				, cfg = {} 
+				, cfg 
 				) => { 
 			cfg = $ .extend( 
 				  { 
@@ -19,7 +19,7 @@
 					, seconds : .5 
 					, channels : 1 
 					} 
-				, cfg 
+				, {} 
 				); 
 			
 			var data = []; 
