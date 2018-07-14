@@ -234,7 +234,11 @@
 		// asBytes(2835, 4) 
 		// > '\x13\x0b\x00\x00' 
 		return ( 
-			mapIn( [ 0, bytes ], ( i, rv = String .fromCharCode( value & 255 ) ) => ( ( value >>= 8 ), rv ) ) 
+			mapIn( [ 0, bytes ], ( i 
+					, rv = String .fromCharCode( value & 255 ) 
+					) => 
+				( ( value >>= 8 ), rv ) 
+				) 
 			.join( '' ) 
 			); 
 		} 
