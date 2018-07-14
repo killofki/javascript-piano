@@ -40,8 +40,8 @@
 			; 
 		
 		$ .each( DataGenerator[ setting ], ( name, fn ) => { 
-			if ( name != 'default' ) { 
-				$( '<p>' ) 
+			name != 'default' 
+			&& $( '<p>' ) 
 				.append( $( 
 					  '<a>'
 					, { 
@@ -59,8 +59,7 @@
 						} 
 					) ) // -- .append( '<a>', ... ) 
 				.appendTo( $opts ) 
-					; 
-				} // -- ( name != 'default' ) 
+				; // -- ( name != 'default' ) 
 			} ) // -- $ .each( DataGenerator[ setting ], ... ) 
 			; 
 		} ) // -- [ 'volume', 'style' ] .forEach( ... ) 
@@ -97,7 +96,7 @@
 				  ta .forEach( ( c, p ) => 
 					   c !== ' ' // skip about blank zone 
 					&& [ spv[ spc .indexOf( c ) ] || c .toUpperCase() .charCodeAt() ] 
-					.forEach( cv => o[ cv ] = pa[ p ] ) 
+						.forEach( cv => o[ cv ] = pa[ p ] ) 
 					) 
 				, o 
 				) ) 
