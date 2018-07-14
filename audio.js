@@ -10,26 +10,25 @@
 				  styleFn = DataGenerator .style .default 
 				, volumeFn = DataGenerator .volume .default 
 				, cfg = {} 
-				) => { 
-			cfg = $ .extend( 
-				  { 
-					  freq : 440 
-					, volume : 32767 
-					, sampleRate : 11025 // Hz 
-					, seconds : .5 
-					, channels : 1 
-					} 
-				, cfg 
-				); 
-			
-			let { freq, volume, sampleRate, seconds, channels } = cfg; 
-			var maxI = sampleRate * seconds; 
-			return flatIn( [ 0, maxI ], i => mapIn( [ 0, channels ], ( j 
+				
+				, { freq, volume, sampleRate, seconds, channels } = cfg = $ .extend( 
+					  { 
+						  freq : 440 
+						, volume : 32767 
+						, sampleRate : 11025 // Hz 
+						, seconds : .5 
+						, channels : 1 
+						} 
+					, cfg 
+					) 
+				, maxI = sampleRate * seconds 
+				) => 
+			flatIn( [ 0, maxI ], i => mapIn( [ 0, channels ], ( j 
 					, fars = [ freq, volume, i, sampleRate, seconds, maxI ] 
 					) => 
 				asBytes( volumeFn( styleFn( ... fars ), ... fars ) * attack( i ), 2 ) 
-				) ); 
-			} // -- ( styleFn, volumeFn, cfg ) => {} // default value over $ 
+				) ) 
+			// -- ( styleFn, volumeFn, cfg ) => {} // default value over $ 
 		, { 
 			  style : { 
 				  wave : ( freq, volume, i, sampleRate, seconds ) => 
