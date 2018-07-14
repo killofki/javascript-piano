@@ -172,7 +172,8 @@
 		// 
 		// Data Sub-Chunk 
 		// 
-			, sampleData = DataGenerator( cfg .styleFn, cfg .volumeFn, cfg ) 
+			, { styleFn, volumeFn } = cfg 
+			, sampleData = DataGenerator( styleFn, volumeFn, cfg ) 
 			, samples = sampleData .length 
 			
 			, dataChunk = 
