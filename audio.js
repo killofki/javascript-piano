@@ -147,23 +147,27 @@
 		
 		var 
 			fmtChunk = 
-				[ cfg, ( [ value, bytes ] ) => asBytes( value, bytes ) ] 
-				.reduce( ( { channels, sampleRate, bitDepth } , F ) => 
-					[ 
-						  'fmt ' // sub-chunk identifier 
-						, ... 
-							[ 
-								  [ 16, 4 ] // chunk-length 
-								, [ 1, 2 ] // audio format (1 is linear quantization) 
-								, [ channels, 2 ] 
-								, [ sampleRate, 4 ] 
-								, [ sampleRate * channels * bitDepth / 8, 4 ] // byte rate 
-								, [ channels * bitDepth / 8, 2 ] 
-								, [ bitDepth, 2 ] 
-								] 
-							.map( F ) 
-						] 
-					) 
+				[ 
+					  cfg
+					, ({ channels, sampleRate, bitDepth }) => 
+						[ 
+							  'fmt ' // sub-chunk identifier 
+							, ... 
+								[ 
+									  [ 16, 4 ] // chunk-length 
+									, [ 1, 2 ] // audio format (1 is linear quantization) 
+									, [ channels, 2 ] 
+									, [ sampleRate, 4 ] 
+									, [ sampleRate * channels * bitDepth / 8, 4 ] // byte rate 
+									, [ channels * bitDepth / 8, 2 ] 
+									, [ bitDepth, 2 ] 
+									] 
+								.map( ( [ value, bytes ] ) => 
+									asBytes( value, bytes ) 
+									) 
+							] 
+					] 
+				.reduce( ( o, F ) => F( o ) ) 
 		
 		// 
 		// Data Sub-Chunk 
