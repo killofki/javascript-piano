@@ -355,7 +355,8 @@
 			, totalTime 
 			, data 
 			, stopTimeout 
-			, loopInterval, loopTimeouts = [] 
+			, loopInterval 
+			, loopTimeouts = [] 
 			; 
 		
 		$keys .on( 
@@ -458,12 +459,9 @@
 		$keys 
 		.on( 'build-done.piano', q =>  
 			$keys .find( '.key' ) 
-			.each( function() { 
-				[ $( this ) .data( 'key' ) ] .forEach( key =>  
-					keyToData[ key ] = getData( key ) 
-					) 
-					; 
-				} ) 
+			.each( function() { [ $( this ) .data( 'key' ) ] .forEach( key =>  
+				keyToData[ key ] = getData( key ) 
+				) } ) 
 			) // -- .on( 'build-done.piano', ... ) 
 			; 
 		
